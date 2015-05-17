@@ -14,16 +14,33 @@ Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'justinmk/vim-sneak'
 Plugin 'tomasr/molokai'
+Plugin 'scrooloose/syntastic'
+Plugin 'yssl/QFEnter'
+Plugin 'milkypostman/vim-togglelist'
+Plugin 'raichoo/haskell-vim'
+Plugin 'eaglemt/neco-ghc'
 
 call vundle#end()
 
 let g:ycm_enable_diagnostic_signs = 1
+let g:ycm_enable_diagnostic_highlighting = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_global_ycm_extra_conf = '/home/johkac/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
+let g:ycm_semantic_triggers = {'haskell' : ['.']}
 
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_by_filename = 1
+
+let g:necoghc_enable_detailed_browse = 1
+let $PATH = $PATH . ':' . expand("/Users/john/Library/Haskell/bin")
+autocmd FileType haskell set omnifunc=necoghc#omnifunc
+
+" quickfix for searching
+let g:qfenter_open_map = ['<C-q>']
+autocmd BufReadPost quickfix nmap <buffer> <CR> <C-q>:ccl<CR><C-w>=
+autocmd FileType qf wincmd J
+autocmd FileType qf wincmd _
 
 set tags=./tags;
 set completeopt=longest,menuone
@@ -50,42 +67,6 @@ function! GenerateTags()
 endfunction
 set tags=./tags;
 
-function! LoadCscope()
-  let db = findfile("cscope.out", ".;")
-  if (!empty(db))
-    let path = strpart(db, 0, match(db, "/cscope.out$"))
-    set nocscopeverbose
-    exe "cs add " . db . " " . path
-    set cscopeverbose
-  endif
-endfunction
-
-function! GenerateCScope()
-    ! find . -name '*.cc' -o -name '*.h' > cscope.files
-    ! cscope -RUbq
-    call LoadCscope()
-endfunction
-
-function! GenerateCScopeNoGtest()
-    ! find . -name '*.cc' -not -path "*gtest/*" -o -name '*.h' -not -path "*gtest/*" > cscope.files
-    ! cscope -RUbq
-    call LoadCscope()
-endfunction
-
-call LoadCscope()
-
-function! Grepcpp(search)
-    execute ":silent grep! -rnP --include=*.cc --include=*.h --exclude-dir=bin . -e \"" . a:search . "\"" |cwindow
-    execute "normal \<C-L>"
-endfunction
-command! -nargs=1 Grepcpp call Grepcpp(<f-args>)
-
-function! Greppy(search)
-    execute ":silent grep! -rnP --include=*.py --exclude-dir=bin . -e " . a:search . " " |cwindow
-    execute "normal \<C-L>"
-endfunction
-command! -nargs=1 Greppy call Greppy(<f-args>)
-
 function! CommandSneakForwards()
     execute "normal v"
     execute ":call sneak#wrap('', 2, 0, 1, 0)"
@@ -99,9 +80,6 @@ endfunction
 
 
 nnoremap <F1> :call GenerateTags()<CR>
-nnoremap <F2> :call GenerateCScope()<CR>
-nnoremap <F3> :call Grepcpp(expand("<cword>"))<CR>
-nnoremap <F4> :call GenerateCScopeNoGtest()<CR>
 noremap <F5> :call Svndiff("prev")<CR>
 noremap <F6> :call Svndiff("next")<CR>
 noremap <F7> :call Svndiff("clear")<CR>
@@ -139,18 +117,22 @@ nnoremap <Leader>P "aP
 nnoremap <Leader>/ /<C-r><C-w>
 nnoremap <Leader>? ?<C-r><C-w>
 nnoremap <Leader>r :%s/\<<C-r><C-w>\>//gc<Left><Left><Left>
-nnoremap <Leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>	
-nnoremap <Leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>	
-nnoremap <Leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>	
 nnoremap <Leader>, :Commentary<CR>
 vnoremap <Leader>, :Commentary<CR>
 nnoremap <Leader>ev :vsplit $MYVIMRC<CR>
 nnoremap <Leader>sv :source $MYVIMRC<CR>
+nnoremap <Leader>/ /<C-r><C-w>
+nnoremap <Leader>? ?<C-r><C-w>
 nnoremap <Leader>j J
-nnoremap <Leader>? ?{\\|}<CR>
-nnoremap <Leader>/ /{\\|}<CR>
 nnoremap J 20j
 nnoremap K 20k
 vnoremap J 20j
 vnoremap K 20k
-nnoremap <Leader>w :w<CR>
+nmap <Left> <Plug>Argumentative_MoveLeft
+nmap <Right> <Plug>Argumentative_MoveRight
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <Leader>s :silent execute "grep! -R " . shellescape(expand("<cWORD>")) . " ."<CR>:copen<CR>
+command! -nargs=+ Grepcpp :silent execute "grep! -R " shellescape(<q-args>) " ." | :copen
