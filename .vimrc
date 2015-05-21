@@ -134,5 +134,5 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
-nnoremap <Leader>s :silent execute "grep! -R " . shellescape(expand("<cWORD>")) . " ."<CR>:copen<CR>
+nnoremap <Leader>s :silent execute "grep! -R " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
 command! -nargs=+ Grepcpp :silent execute "grep! -R " shellescape(<q-args>) " ." | :copen

@@ -1,1 +1,4 @@
 Font: Dejavu Sans Mono
+togglelist.vim
+    Add "wincmd p" between lines 62-63
+    Delete lines 72-74
