@@ -4,3 +4,5 @@ togglelist.vim
     exec "normal!\<C-w>=" (line 64)
     Delete lines 72-74
 
+indentwise.vim
+    Rename all "normal G" commands as "keepjumps normal G"
