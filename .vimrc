@@ -208,8 +208,8 @@ function! IndentWiseDifferentIndent(next)
 endfunction
 
 noremap <silent> } :<C-u>execute "keepjumps norm! /{\<lt>CR>/\\S\<lt>CR>"<CR>
-noremap <silent> { :<C-u>execute "keepjumps norm! 2?{\<lt>CR>/\\S\<lt>CR>"<CR>
+noremap <silent> { :<C-u>execute "keepjumps norm! ?\\S\<lt>CR>?{\<lt>CR>/\\S\<lt>CR>"<CR>
 noremap <silent> ) :<C-u>execute "keepjumps norm! /(\<lt>CR>/\\S\<lt>CR>"<CR>
-noremap <silent> ( :<C-u>execute "keepjumps norm! 2?(\<lt>CR>/\\S\<lt>CR>"<CR>
+noremap <silent> ( :<C-u>execute "keepjumps norm! ?\\S\<lt>CR>?(\<lt>CR>/\\S\<lt>CR>"<CR>
 map <silent> > :call IndentWiseDifferentIndent(1)<CR>
 map <silent> < :call IndentWiseDifferentIndent(0)<CR>
