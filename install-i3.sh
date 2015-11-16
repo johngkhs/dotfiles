@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 if [ ! -d "$HOME/usr/bin" ]; then
   mkdir -p "$HOME/usr/bin"
 fi
