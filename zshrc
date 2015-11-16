@@ -1,5 +1,6 @@
 PATH="$PATH:$HOME/usr/bin"
 LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/usr/lib"
+source "$HOME/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
 
 function a()
 {
