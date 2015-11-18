@@ -1,53 +1,75 @@
 PATH="$PATH:$HOME/usr/bin"
 LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/usr/lib"
+EDITOR=vim
+
+autoload -U compinit && compinit
+autoload -U promptinit && promptinit
+autoload -U colors && colors
+autoload -U select-quoted
+autoload -U select-bracketed
+
+zle -N select-quoted
+zle -N select-bracketed
+zle -N zle-line-init
+zle -N zle-keymap-select
+
+setopt extendedglob
+unsetopt correct_all
+
+setopt menu_complete
+zmodload zsh/complist
+
+export HISTFILE="$HOME/.history"
+export HISTSIZE=3000
+export SAVEHIST=3000
+
+setopt APPEND_HISTORY
+setopt EXTENDED_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt SHARE_HISTORY
+
+for mode in visual viopp; do
+  for keymap in {a,i}{\',\",\`}; do
+    bindkey -M "$mode" "$keymap" select-quoted
+  done
+done
+
+for mode in visual viopp; do
+  for keymap in {a,i}${(s..)^:-'()[]{}<>bB'}; do
+    bindkey -M "$mode" "$keymap" select-bracketed
+  done
+done
+
+function zle-line-init zle-keymap-select
+{
+  HIGHLIGHT="%{$bg[white]$fg[black]%}"
+  VIM_MODE="${${KEYMAP/vicmd/$HIGHLIGHT>>>}/(main|viins)/>>>}"
+  PS1="%{$fg_bold[white]$bg[blue]%}%n@%m%{$reset_color%} %{$fg_bold[yellow]%}%~%{$reset_color%}${prompt_newline}${VIM_MODE}%{$reset_color%} "
+  zle reset-prompt
+}
+
+zstyle ':completion:*' menu select=1
+zstyle ':completion:*' matcher-list '' \
+  'm:{a-z\-}={A-Z\_}' \
+  'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
+  'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
+zstyle ':completion:*' completer _complete _approximate
+zstyle ':completion:*:approximate:::' max-errors 1 numeric
+zstyle -e ':completion:*:default' list-colors 'reply=("${PREFIX:+=(#bi)($PREFIX:t)(?)*==02=01}:${(s.:.)LS_COLORS}")'
+zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,command -w -w'
+zstyle ':completion:*' file-sort modification
+bindkey -M menuselect '^[[Z' reverse-menu-complete
+
+bindkey -v
+bindkey -M viins 'jk' vi-cmd-mode
+bindkey "^?" backward-delete-char
+bindkey -M vicmd -s "/" "T/C"
+
 source "$HOME/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
+bindkey -M vicmd 'j' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
 
-function a()
-{
-    [ "$#" -gt 1 ] && { echo "Usage: $0 [DIRECTORY]" >&2; return 1 }
-    local target_dir="$(pwd)"
-    if [ $# -eq 1 ]; then
-      target_dir="$1"
-    fi
-    target_dir="${target_dir%/}/"
-    [ ! -d "$target_dir" ] && { echo "Error: $target_dir does not exist" >&2; return 1 }
-    ls -FHAltr "$target_dir" | cat -n | awk -v n=5 '1; NR % n == 0 {print ""}'
-
-    LIST_OF_TARGET_FILES=()
-    for filename in $(ls -FHAltr "$target_dir" | cat -n | awk '{ print $10 }')
-    do
-        LIST_OF_TARGET_FILES+=("${target_dir}${filename}")
-    done
-}
-
-function l()
-{
-    [ "$#" -ne 1 ] && { echo "Usage: $0 index" >&2; return 1}
-    local target_index="$(($1 - 1))"
-    R="${LIST_OF_TARGET_FILES[$target_index]}"
-    less "$R"
-}
-
-function v()
-{
-    [ "$#" -ne 1 ] && { echo "Usage: $0 index" >&2; return 1}
-    local target_index="$(($1 - 1))"
-    R="${LIST_OF_TARGET_FILES[$target_index]}"
-    vim "$R"
-}
-
-function s()
-{
-    [ "$#" -ne 1 ] && { echo "Usage: $0 index" >&2; return 1}
-    local target_index="$(($1 - 1))"
-    R="${LIST_OF_TARGET_FILES[$target_index]}"
-}
-
-function y()
-{
-    vim /tmp/tmux_panel.txt -c "normal! Gkk"
-}
-
-alias ls='ls -FhA --color'
+alias y='vim /tmp/tmux_panel.txt -c "normal! Gkk"'
+alias ls='ls -Fa'
 alias tmux="TERM=screen-256color-bce tmux"
-alias xc='xclip -selection c'
