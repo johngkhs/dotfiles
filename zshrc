@@ -19,13 +19,9 @@ unsetopt correct_all
 setopt menu_complete
 zmodload zsh/complist
 
-export HISTFILE="$HOME/.history"
+export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=3000
 export SAVEHIST=3000
-
-setopt APPEND_HISTORY
-setopt EXTENDED_HISTORY
-setopt INC_APPEND_HISTORY
 setopt HIST_IGNORE_ALL_DUPS
 setopt SHARE_HISTORY
 
@@ -64,7 +60,6 @@ bindkey -M menuselect '^[[Z' reverse-menu-complete
 bindkey -v
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey "^?" backward-delete-char
-bindkey -M vicmd -s "/" "T/C"
 
 source "$HOME/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
 bindkey -M vicmd 'j' history-substring-search-down
