@@ -22,8 +22,8 @@ zmodload zsh/complist
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=3000
 export SAVEHIST=3000
-setopt HIST_FIND_NO_DUPS
-setopt SHARE_HISTORY
+setopt hist_ignore_all_dups
+setopt share_history
 
 for mode in visual viopp; do
   for keymap in {a,i}{\',\",\`}; do
