@@ -165,10 +165,10 @@ vnoremap <S-Tab> <gv
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
 
-nnoremap <Leader>r :%s/\<<C-r><C-w>\>//gc<Left><Left><Left>
-nnoremap <Leader>R :%s/\<<C-r><C-w>\>//g<Left><Left>
-vnoremap <Leader>r y:%s/<C-r>"//gc<Left><Left><Left>
-vnoremap <Leader>R y:%s/<C-r>"//g<Left><Left><Left>
+nnoremap <Leader>r :%s@\<<C-r><C-w>\>@@gc<Left><Left><Left>
+nnoremap <Leader>R :%s@\<<C-r><C-w>\>@@g<Left><Left>
+vnoremap <Leader>r y:%s@<C-r>"@@gc<Left><Left><Left>
+vnoremap <Leader>R y:%s@<C-r>"@@g<Left><Left><Left>
 
 nnoremap <Leader>d "_d
 vnoremap <Leader>d "_d
