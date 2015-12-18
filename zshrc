@@ -65,6 +65,17 @@ source "$HOME/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-se
 bindkey -M vicmd 'j' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 
+source "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red,bold'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
+ZSH_HIGHLIGHT_STYLES[path]='fg=white,bold'
+ZSH_HIGHLIGHT_STYLES[path_prefix]='fg=white,underline'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=gray'
+
 alias y='vim /tmp/tmux_panel.txt -c "normal! Gkk"'
 alias ls='ls -Fa'
 alias tmux="TERM=screen-256color-bce tmux"
