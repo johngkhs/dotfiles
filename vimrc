@@ -49,7 +49,6 @@ set ruler
 set wildignore+=*.o,*.a,*/bin/*
 set nofoldenable
 set lazyredraw ttyfast
-set number relativenumber
 set laststatus=2
 
 set grepprg=ag\ --nogroup\ --nocolor
