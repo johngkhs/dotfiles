@@ -24,7 +24,6 @@ Plugin 'haya14busa/incsearch.vim'
 Plugin 'tpope/vim-repeat'
 Plugin 'Yggdroot/indentLine.git'
 Plugin 'lyuts/vim-rtags'
-Plugin 'eaglemt/neco-ghc'
 
 call vundle#end()
 filetype plugin indent on
