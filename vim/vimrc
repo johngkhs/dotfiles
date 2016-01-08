@@ -1,8 +1,15 @@
-let mapleader = "\<Space>"
-set nocompatible
-filetype off
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                preamble                                                     "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-set rtp+=~/.vim/bundle/Vundle.vim
+set nocompatible
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                 vundle                                                      "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+filetype off
+set rtp+=$HOME/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'gmarik/Vundle.vim'
@@ -24,15 +31,19 @@ Plugin 'haya14busa/incsearch.vim'
 Plugin 'tpope/vim-repeat'
 Plugin 'Yggdroot/indentLine.git'
 Plugin 'lyuts/vim-rtags'
+Plugin 'Valloric/MatchTagAlways'
 
 call vundle#end()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                settings                                                     "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 filetype plugin indent on
 runtime macros/matchit.vim
-
 syntax on
 colorscheme molokai
 set background=dark
-set tags=./tags;
 set completeopt=longest,menuone
 set autoindent
 set tabstop=4 shiftwidth=4 expandtab
@@ -50,17 +61,26 @@ set nofoldenable
 set lazyredraw ttyfast
 set laststatus=2
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            silversearcher                                                   "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 set grepprg=ag\ --nogroup\ --nocolor
 nnoremap <Leader>s :silent execute "grep! --cpp " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
 command! -nargs=+ Grepcpp :silent execute "grep! --cpp " shellescape(<q-args>) " ." | :copen
 command! -nargs=+ Greppy :silent execute "grep! --py " shellescape(<q-args>) " ." | :copen
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            youcompleteme                                                    "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let g:ycm_enable_diagnostic_signs = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_global_ycm_extra_conf = "$HOME/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py"
-let g:ycm_semantic_triggers = {'haskell' : ['.']}
-let g:ycm_confirm_extra_conf = 0
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                sneak                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:sneak#use_ic_scs = 1
 nmap s <Plug>Sneak_s
@@ -82,6 +102,10 @@ xmap T <Plug>Sneak_T
 omap t <Plug>Sneak_t
 omap T v<Plug>Sneak_T
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                ctrlp                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_by_filename = 1
 let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
@@ -96,20 +120,42 @@ let g:ctrlp_prompt_mappings =
 nnoremap <Leader>f :CtrlP .<CR>
 nnoremap <Leader>b :CtrlPBuffer<CR>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                              closetag                                                       "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let g:closetag_filenames = "*.xml"
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                              qfenter                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let g:qfenter_open_map = ['<C-q>']
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                             togglelist                                                      "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let g:toggle_list_no_mappings = 1
 nmap <script> <silent> <Leader>a :call ToggleQuickfixList()<CR>
 
-let g:necoghc_enable_detailed_browse = 1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                              fswitch                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let b:fswitchdst = 'h,hpp'
 nmap <silent> <Leader>h :FSHere<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                             filebeagle                                                      "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:filebeagle_suppress_keymaps = 1
 map <silent> <Leader>-  <Plug>FileBeagleOpenCurrentWorkingDir
 map <silent> - <Plug>FileBeagleOpenCurrentBufferDir
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                             incsearch                                                       "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:incsearch#separate_highlight = 1
 highlight IncSearchMatch ctermbg=87 ctermfg=0
@@ -117,8 +163,16 @@ highlight IncSearchMatchReverse ctermbg=219 ctermfg=0
 map / <Plug>(incsearch-forward)
 map ? <Plug>(incsearch-backward)
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            indentline                                                       "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let g:indentLine_color_term = 245
 let g:indentLine_char = '│'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                              rtags                                                          "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:rtagsUseLocationList = 0
 let g:rtagsUseDefaultMappings = 0
@@ -126,20 +180,42 @@ nnoremap <Enter> :call rtags#JumpTo()<CR>
 nnoremap <Leader><Enter> :call rtags#FindRefs()<CR>
 nnoremap <Leader><Leader><Enter> g<C-]>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                          argumentative                                                      "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 nmap <Left> <Plug>Argumentative_MoveLeft
 nmap <Right> <Plug>Argumentative_MoveRight
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                         camelcasemotion                                                     "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 omap <silent> au <Plug>CamelCaseMotion_iw
 xmap <silent> au <Plug>CamelCaseMotion_iw
 omap <silent> iu <Plug>CamelCaseMotion_ie
 xmap <silent> iu <Plug>CamelCaseMotion_ie
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            commentary                                                       "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 nnoremap <Leader>, :Commentary<CR>
 vnoremap <Leader>, :Commentary<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            clipboard                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set clipboard=unnamedplus
 nnoremap <Leader>P O<Space><Backspace><Esc>:set paste<CR>p:set nopaste<CR>
 nnoremap <Leader>p o<Space><Backspace><Esc>:set paste<CR>p:set nopaste<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            mappings                                                         "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let mapleader = "\<Space>"
 
 inoremap jk <Esc>
 cnoremap jk <C-c>
@@ -185,6 +261,10 @@ nnoremap <Leader><Backspace> g,
 
 nnoremap Y y$
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            autocommands                                                     "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 augroup save_clipboard_contents_on_exit
     autocmd!
     autocmd VimLeave * call system("xclip -in -selection clipboard", getreg('+'))
@@ -210,11 +290,11 @@ augroup fullscreen_quickfix
   autocmd FileType qf wincmd _
 augroup END
 
-augroup haskell_completion
-  autocmd!
-  autocmd FileType haskell set omnifunc=necoghc#omnifunc
-augroup END
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                              ctags                                                          "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+set tags=./tags;
 function! GenerateTags()
     ! ctags -R --fields=+al .
     set tags=./tags;
