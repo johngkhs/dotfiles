@@ -52,7 +52,7 @@ for mode in visual viopp; do
 done
 
 for mode in visual viopp; do
-  for keymap in {a,i}${(s..)^:-'()[]{}<>bB'}; do
+  for keymap in {a,i}{\(,\),\[,\],\{,\},\<,\>,b,B}; do
     bindkey -M "$mode" "$keymap" select-bracketed
   done
 done
