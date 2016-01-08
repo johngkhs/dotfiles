@@ -1,6 +1,16 @@
+setopt interactive_comments
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                         environment variables                                               "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 PATH="$PATH:$HOME/usr/bin"
 LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/usr/lib"
 EDITOR=vim
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                           general settings                                                  "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 autoload -U compinit && compinit
 autoload -U promptinit && promptinit
@@ -15,11 +25,14 @@ zle -N zle-keymap-select
 
 setopt extended_glob
 unsetopt correct_all
-
 setopt menu_complete
 zmodload zsh/complist
 
-export HISTFILE="$HOME/.zsh_history"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                               history                                                       "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+export HISTFILE="$HOME/.history"
 export HISTSIZE=3000
 export SAVEHIST=3000
 setopt append_history
@@ -27,6 +40,10 @@ setopt extended_history
 setopt inc_append_history
 setopt hist_ignore_all_dups
 setopt share_history
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            vim inner motions                                                "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 for mode in visual viopp; do
   for keymap in {a,i}{\',\",\`}; do
@@ -40,13 +57,23 @@ for mode in visual viopp; do
   done
 done
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                prompt                                                       "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 function zle-line-init zle-keymap-select
 {
   HIGHLIGHT="%{$bg[white]$fg[black]%}"
   VIM_MODE="${${KEYMAP/vicmd/$HIGHLIGHT>>>}/(main|viins)/>>>}"
-  PS1="%{$fg_bold[white]$bg[blue]%}%n@%m%{$reset_color%} %{$fg_bold[yellow]%}%~%{$reset_color%}${prompt_newline}${VIM_MODE}%{$reset_color%} "
+  PROMPT_FIRST_LINE="%{$fg_bold[white]$bg[blue]%}%n@%m%{$reset_color%} %{$fg_bold[yellow]%}%~%{$reset_color%}"
+  PROMPT_SECOND_LINE="${VIM_MODE}%{$reset_color%} "
+  PS1="${PROMPT_FIRST_LINE}${prompt_newline}${PROMPT_SECOND_LINE}"
   zle reset-prompt
 }
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                             tab completion                                                  "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 zstyle ':completion:*' menu select=1
 zstyle ':completion:*' matcher-list '' \
@@ -64,9 +91,17 @@ bindkey -v
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey "^?" backward-delete-char
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                       zsh-history-substring-search                                          "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 source "$HOME/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
 bindkey -M vicmd 'j' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                         zsh-syntax-highlighting                                             "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 source "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
@@ -79,7 +114,11 @@ ZSH_HIGHLIGHT_STYLES[path]='fg=white,bold'
 ZSH_HIGHLIGHT_STYLES[path_prefix]='fg=white,underline'
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=gray'
 
-alias y='vim /tmp/tmux_panel.txt -c "normal! Gkk"'
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                              aliases                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+alias y='vim /tmp/pane.txt -c "normal! Gkk"'
 alias ls='ls -Fa'
 alias tmux="TERM=screen-256color-bce tmux"
 alias xc='xclip -selection c'
