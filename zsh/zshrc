@@ -58,6 +58,14 @@ for mode in visual viopp; do
 done
 
 ###############################################################################################################
+#                                               vim mode                                                      #
+###############################################################################################################
+
+bindkey -v
+bindkey -M viins 'jk' vi-cmd-mode
+bindkey "^?" backward-delete-char
+
+###############################################################################################################
 #                                                prompt                                                       #
 ###############################################################################################################
 
@@ -86,10 +94,6 @@ zstyle -e ':completion:*:default' list-colors 'reply=("${PREFIX:+=(#bi)($PREFIX:
 zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,command -w -w'
 zstyle ':completion:*' file-sort modification
 bindkey -M menuselect '^[[Z' reverse-menu-complete
-
-bindkey -v
-bindkey -M viins 'jk' vi-cmd-mode
-bindkey "^?" backward-delete-char
 
 ###############################################################################################################
 #                                       zsh-history-substring-search                                          #
