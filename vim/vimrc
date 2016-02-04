@@ -232,6 +232,8 @@ let mapleader = "\<Space>"
 
 inoremap jk <Esc>
 cnoremap jk <C-c>
+inoremap jj ()<Esc><Left>i
+inoremap kk <Esc>A<Space>{<CR>}<Esc><Up>A<CR>
 
 map J 20j
 map K 20k
@@ -263,9 +265,6 @@ nnoremap <Leader>J mzJ`z
 
 nnoremap <Leader>E :vsplit $MYVIMRC<CR>
 nnoremap <Leader>S :source $MYVIMRC<CR>
-
-nnoremap <Backspace> g;
-nnoremap <Leader><Backspace> g,
 
 nnoremap Y y$
 
