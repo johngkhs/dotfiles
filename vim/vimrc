@@ -32,6 +32,7 @@ Plugin 'tpope/vim-repeat'
 Plugin 'Yggdroot/indentLine.git'
 Plugin 'lyuts/vim-rtags'
 Plugin 'Valloric/MatchTagAlways'
+Plugin 'christoomey/vim-tmux-navigator'
 
 call vundle#end()
 
@@ -236,11 +237,6 @@ map K 20k
 
 nnoremap <Leader>w :w<CR>
 nnoremap <Leader>q :q<CR>
-
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
 
 nnoremap H <C-O>
 nnoremap L <C-I>
