@@ -33,6 +33,7 @@ Plugin 'Yggdroot/indentLine.git'
 Plugin 'lyuts/vim-rtags'
 Plugin 'Valloric/MatchTagAlways'
 Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'wellle/targets.vim'
 
 call vundle#end()
 
