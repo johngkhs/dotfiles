@@ -125,10 +125,16 @@ ZSH_HIGHLIGHT_STYLES[globbing]='fg=gray'
 source "$HOME/.zsh/plugins/zsh-extract/extract.plugin.zsh"
 
 ###############################################################################################################
+#                                               fzf                                                           #
+###############################################################################################################
+
+export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
+
+###############################################################################################################
 #                                              aliases                                                        #
 ###############################################################################################################
 
 alias y='vim /tmp/pane.txt -c "normal! Gkk"'
 alias ls='ls -Fa'
-alias tmux="TERM=screen-256color-bce tmux"
 alias xc='xclip -selection c'

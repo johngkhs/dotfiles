@@ -16,7 +16,6 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'tpope/vim-commentary'
 Plugin 'PeterRincker/vim-argumentative'
-Plugin 'kien/ctrlp.vim'
 Plugin 'justinmk/vim-sneak'
 Plugin 'tomasr/molokai'
 Plugin 'yssl/QFEnter'
@@ -34,14 +33,16 @@ Plugin 'lyuts/vim-rtags'
 Plugin 'Valloric/MatchTagAlways'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'wellle/targets.vim'
+Plugin 'junegunn/fzf.vim'
+Plugin 'junegunn/fzf'
 
 call vundle#end()
+filetype plugin indent on
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                          general settings                                                   "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-filetype plugin indent on
 runtime macros/matchit.vim
 syntax on
 colorscheme molokai
@@ -72,7 +73,7 @@ function! GenerateTags()
     ! ctags -R --fields=+al .
     set tags=./tags;
 endfunction
-nnoremap <F1> :call GenerateTags()<CR>
+nnoremap <F7> :call GenerateTags()<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                           silversearcher                                                   "
@@ -90,6 +91,7 @@ command! -nargs=+ Greppy :silent execute "grep! --py " shellescape(<q-args>) " .
 let g:ycm_enable_diagnostic_signs = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
+nmap <Leader>y :YcmDiags<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                                sneak                                                        "
@@ -116,22 +118,14 @@ omap t <Plug>Sneak_t
 omap T v<Plug>Sneak_T
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                                ctrlp                                                        "
+"                                                fzf                                                          "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let g:ctrlp_switch_buffer = 0
-let g:ctrlp_by_filename = 1
-let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-let g:ctrlp_match_window = 'bottom,order:ttb,min:15,max:15,results:15'
-let g:ctrlp_prompt_mappings =
-\ {
-\   'PrtSelectMove("j")': ['<down>', '<tab>'] ,
-\   'PrtSelectMove("k")': ['<up>', '<s-tab>'],
-\   'PrtExpandDir()': [],
-\   'ToggleFocus()': [],
-\ }
-nnoremap <Leader>f :CtrlP .<CR>
-nnoremap <Leader>b :CtrlPBuffer<CR>
+let g:fzf_layout = { 'down': '~30%' }
+nnoremap <Leader>f :Files<CR>
+nnoremap <Leader>b :Buffers<CR>
+nnoremap <Leader>g :Tags<CR>
+nnoremap <Leader>G :BTags<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                              closetag                                                       "
@@ -163,7 +157,6 @@ nmap <silent> <Leader>h :FSHere<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:filebeagle_suppress_keymaps = 1
-map <silent> <Leader>-  <Plug>FileBeagleOpenCurrentWorkingDir
 map <silent> - <Plug>FileBeagleOpenCurrentBufferDir
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -232,8 +225,9 @@ let mapleader = "\<Space>"
 
 inoremap jk <Esc>
 cnoremap jk <C-c>
-inoremap jj ()<Esc><Left>i
+inoremap jj ()<Esc>i
 inoremap kk <Esc>A<Space>{<CR>}<Esc><Up>A<CR>
+map <Leader>t :Grepcpp 
 
 map J 20j
 map K 20k
