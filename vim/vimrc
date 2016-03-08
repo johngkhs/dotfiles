@@ -32,9 +32,10 @@ Plugin 'Yggdroot/indentLine.git'
 Plugin 'lyuts/vim-rtags'
 Plugin 'Valloric/MatchTagAlways'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'wellle/targets.vim'
 Plugin 'junegunn/fzf.vim'
 Plugin 'junegunn/fzf'
+Plugin 'zirrostig/vim-schlepp'
+Plugin 'gioele/vim-autoswap'
 
 call vundle#end()
 filetype plugin indent on
@@ -210,6 +211,21 @@ nnoremap <Leader>, :Commentary<CR>
 vnoremap <Leader>, :Commentary<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                             autoswap                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:autoswap_detect_tmux = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                             schlepp                                                         "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+vmap <Up>    <Plug>SchleppUp
+vmap <Down>  <Plug>SchleppDown
+vmap <Left>  <Plug>SchleppLeft
+vmap <Right> <Plug>SchleppRight
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            clipboard                                                        "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -254,6 +270,9 @@ nnoremap <Leader>x "_x
 vnoremap <Leader>x "_x
 nnoremap <Leader>c "_c
 vnoremap <Leader>c "_c
+
+nnoremap <Up> ddkP
+nnoremap <Down> ddp
 
 nnoremap <Leader>J mzJ`z
 
