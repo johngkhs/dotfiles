@@ -4,29 +4,17 @@ setopt interactive_comments
 #                                         environment variables                                               #
 ###############################################################################################################
 
-PATH="$PATH:$HOME/usr/bin"
-LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/usr/lib"
+PATH="$HOME/usr/bin:$PATH"
+LD_LIBRARY_PATH="$HOME/usr/lib:$LD_LIBRARY_PATH"
 EDITOR=vim
 
 ###############################################################################################################
 #                                           general settings                                                  #
 ###############################################################################################################
 
-autoload -U compinit && compinit
-autoload -U promptinit && promptinit
 autoload -U colors && colors
-autoload -U select-quoted
-autoload -U select-bracketed
-
-zle -N select-quoted
-zle -N select-bracketed
-zle -N zle-line-init
-zle -N zle-keymap-select
-
 setopt extended_glob
 unsetopt correct_all
-setopt menu_complete
-zmodload zsh/complist
 
 ###############################################################################################################
 #                                               history                                                       #
@@ -44,6 +32,11 @@ setopt share_history
 ###############################################################################################################
 #                                            vim inner motions                                                #
 ###############################################################################################################
+
+autoload -U select-quoted
+autoload -U select-bracketed
+zle -N select-quoted
+zle -N select-bracketed
 
 for mode in visual viopp; do
   for keymap in {a,i}{\',\",\`}; do
@@ -66,22 +59,19 @@ bindkey -M viins 'jk' vi-cmd-mode
 bindkey "^?" backward-delete-char
 
 ###############################################################################################################
-#                                                prompt                                                       #
+#                                            powerline prompt                                                 #
 ###############################################################################################################
 
-function zle-line-init zle-keymap-select
-{
-  HIGHLIGHT="%{$bg[white]$fg[black]%}"
-  VIM_MODE="${${KEYMAP/vicmd/$HIGHLIGHT>>>}/(main|viins)/>>>}"
-  PROMPT_FIRST_LINE="%{$fg_bold[white]$bg[blue]%}%n@%m%{$reset_color%} %{$fg_bold[yellow]%}%~%{$reset_color%}"
-  PROMPT_SECOND_LINE="${VIM_MODE}%{$reset_color%} "
-  PS1="${PROMPT_FIRST_LINE}${prompt_newline}${PROMPT_SECOND_LINE}"
-  zle reset-prompt
-}
+source "$HOME/.config/powerline/source_powerline.zsh"
+powerline-daemon -q
 
 ###############################################################################################################
 #                                             tab completion                                                  #
 ###############################################################################################################
+
+autoload -U compinit && compinit
+setopt menu_complete
+zmodload zsh/complist
 
 zstyle ':completion:*' menu select=1
 zstyle ':completion:*' matcher-list '' \
@@ -138,3 +128,5 @@ export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
 alias y='vim /tmp/pane.txt -c "normal! Gkk"'
 alias ls='ls -Fa'
 alias xc='xclip -selection c'
+alias g="git"
+alias m="unbuffer make -j8 |& less -R"
