@@ -128,6 +128,5 @@ export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
 
 alias y='vim /tmp/pane.txt -c "normal! Gkk"'
 alias ls='ls -Fa'
-alias xc='xclip -selection c'
-alias g="git"
-alias m="unbuffer make -j8 |& less -R"
+alias g='git'
+alias m='unbuffer make -j8 |& less -R'
