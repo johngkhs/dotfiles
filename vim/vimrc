@@ -36,6 +36,7 @@ Plugin 'junegunn/fzf.vim'
 Plugin 'junegunn/fzf'
 Plugin 'zirrostig/vim-schlepp'
 Plugin 'gioele/vim-autoswap'
+Plugin 'vim-airline/vim-airline'
 
 call vundle#end()
 filetype plugin indent on
@@ -64,6 +65,8 @@ set wildignore+=*.o,*.a,*/bin/*
 set nofoldenable
 set lazyredraw ttyfast
 set laststatus=2
+hi Normal ctermbg=none
+hi NonText ctermbg=none
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                              ctags                                                          "
@@ -224,6 +227,12 @@ vmap <Up>    <Plug>SchleppUp
 vmap <Down>  <Plug>SchleppDown
 vmap <Left>  <Plug>SchleppLeft
 vmap <Right> <Plug>SchleppRight
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                             airline                                                         "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:airline_powerline_fonts = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            clipboard                                                        "

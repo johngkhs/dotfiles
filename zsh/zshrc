@@ -4,9 +4,10 @@ setopt interactive_comments
 #                                         environment variables                                               #
 ###############################################################################################################
 
-PATH="$HOME/usr/bin:$PATH"
-LD_LIBRARY_PATH="$HOME/usr/lib:$LD_LIBRARY_PATH"
-EDITOR=vim
+export PATH="$HOME/usr/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/usr/lib:$LD_LIBRARY_PATH"
+export PYTHONPATH="$HOME/usr/lib/python:$PYTHONPATH"
+export EDITOR=vim
 
 ###############################################################################################################
 #                                           general settings                                                  #
