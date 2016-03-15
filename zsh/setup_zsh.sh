@@ -9,7 +9,7 @@ git clone https://github.com/zsh-users/zsh-history-substring-search "$script_dir
 git clone https://github.com/zsh-users/zsh-syntax-highlighting "$script_dir/dotzsh/plugins/zsh-syntax-highlighting"
 git clone https://github.com/robbyrussell/oh-my-zsh.git /tmp/oh-my-zsh && cp -R /tmp/oh-my-zsh/plugins/extract "$script_dir/dotzsh/plugins/zsh-extract"
 
-cp "$script_dir/shared.zshrc" "$script_dir/zshrc"
+cp -n "$script_dir/shared.zshrc" "$script_dir/zshrc"
 
 platform="$(uname)"
 if [[ "$platform" == *Darwin* ]]; then

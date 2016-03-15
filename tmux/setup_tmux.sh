@@ -5,7 +5,7 @@ set -o xtrace
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-cp "$script_dir/shared.tmux.conf" "$script_dir/tmux.conf"
+cp -n "$script_dir/shared.tmux.conf" "$script_dir/tmux.conf"
 
 platform="$(uname)"
 if [[ "$platform" == *Darwin* ]]; then
