@@ -5,6 +5,7 @@ set -o xtrace
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+export PYTHONPATH="$HOME/usr/lib/python:$PYTHONPATH"
 git clone https://github.com/powerline/powerline /tmp/powerline
 cd /tmp/powerline
 python setup.py install --home="$HOME/usr"
