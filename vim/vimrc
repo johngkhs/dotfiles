@@ -37,6 +37,7 @@ Plugin 'junegunn/fzf'
 Plugin 'zirrostig/vim-schlepp'
 Plugin 'gioele/vim-autoswap'
 Plugin 'vim-airline/vim-airline'
+Plugin 'ludovicchabant/vim-gutentags'
 
 call vundle#end()
 filetype plugin indent on
