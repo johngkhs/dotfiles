@@ -251,7 +251,8 @@ let mapleader = "\<Space>"
 inoremap jk <Esc>
 cnoremap jk <C-c>
 inoremap jj ()<Esc>i
-inoremap kk <Esc>A<Space>{<CR>}<Esc><Up>A<CR>
+inoremap kk ()
+inoremap jl <Esc>A<Space>{<CR>}<Esc><Up>A<CR>
 map <Leader>t :Grepcpp 
 
 map J 20j
