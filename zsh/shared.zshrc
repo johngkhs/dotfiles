@@ -138,7 +138,6 @@ function c() { cd "$(z -l | awk {'print $2}' | fzf)" }
 #                                              aliases                                                        #
 ###############################################################################################################
 
-alias y='vim /tmp/pane.txt -c "normal! Gkk"'
 alias ls='ls -Fa'
 alias g='git'
 alias m='unbuffer make -j8 |& less -R'
