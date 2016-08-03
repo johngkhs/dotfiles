@@ -1,0 +1,21 @@
+[core]
+    editor = vim
+    pager = "less -F"
+[push]
+	default = simple
+[alias]
+    l = log --abbrev-commit --decorate --color --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(bold cyan)[%an]%C(reset) %C(white)%s%C(reset) %C(bold yellow)%d%C(reset)'
+    f = fetch
+    b = branch -vv --sort=committerdate
+    ba = branch -avv --sort=committerdate
+    d = diff
+    s = status
+    ci = commit -a -m
+    co = checkout
+    a = add -A
+    db = branch -d
+    cb = "!create_branch() { set -e; git pull; git checkout -b $1; git push -u origin $1; }; create_branch"
+    v = remote -v
+    st = stash
+    t = log --tags --decorate --simplify-by-decoration --oneline
+    ct = "!create_tag() { set -e; git tag -a $1 -m \"Tagging $1\"; git push origin $1; }; create_tag"
