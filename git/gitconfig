@@ -2,7 +2,7 @@
     editor = vim
     pager = "less -F"
 [push]
-	default = simple
+    default = simple
 [alias]
     l = log --abbrev-commit --decorate --color --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(bold cyan)[%an]%C(reset) %C(white)%s%C(reset) %C(bold yellow)%d%C(reset)'
     f = fetch
