@@ -22,8 +22,8 @@ unsetopt correct_all
 ###############################################################################################################
 
 export HISTFILE="$HOME/.history"
-export HISTSIZE=1000000
-export SAVEHIST=1000000
+export HISTSIZE=500000
+export SAVEHIST=500000
 setopt append_history
 setopt extended_history
 setopt inc_append_history
