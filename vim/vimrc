@@ -74,11 +74,6 @@ hi NonText ctermbg=none
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set tags=./tags;
-function! GenerateTags()
-    ! ctags -R --fields=+al .
-    set tags=./tags;
-endfunction
-nnoremap <F7> :call GenerateTags()<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                           silversearcher                                                   "
