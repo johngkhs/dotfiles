@@ -132,12 +132,38 @@ export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
 #                                             functions                                                       #
 ###############################################################################################################
 
-function j() { cd "$(z -l | awk '{print $2}' | fzf)" }
-function d() { dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) && cd "$dir" }
-function f() { file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir" }
-function k() { pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}') && if [[ "$pid" ]]; then kill -${1:-9} "$pid"; fi }
-function h() { print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac -e | sed 's/ *[0-9]*[\* ]*//') }
-function br() { branches="$(git branch --all | grep -v HEAD)" && branch=$(echo "$branches" | fzf) && git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##") }
+function j() {
+  cd "$(z -l | awk '{print $2}' | fzf)"
+}
+
+function d() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) && cd "$dir"
+}
+
+function f() {
+  local file dir
+  file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
+}
+
+function k() {
+  local pid
+  pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+  if [[ "$pid" ]] then
+    kill -${1:-9} "$pid"
+  fi
+}
+
+function h() {
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac -e | sed 's/ *[0-9]*[\* ]*//')
+}
+
+function br() {
+  local branches branch
+  branches="$(git branch --all | grep -v HEAD)" &&
+  branch=$(echo "$branches" | fzf) &&
+  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
 
 ###############################################################################################################
 #                                              aliases                                                        #
