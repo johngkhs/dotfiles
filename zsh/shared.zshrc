@@ -16,6 +16,7 @@ export EDITOR=vim
 autoload -U colors && colors
 setopt extended_glob
 unsetopt correct_all
+export KEYTIMEOUT=1
 
 ###############################################################################################################
 #                                               history                                                       #
