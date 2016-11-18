@@ -151,7 +151,7 @@ function k() {
   local pid
   pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
   if [[ "$pid" ]] then
-    kill -${1:-9} "$pid"
+    kill -${1:-15} "$pid"
   fi
 }
 

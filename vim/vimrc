@@ -80,9 +80,9 @@ set tags=./tags;
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set grepprg=ag\ --nogroup\ --nocolor
-nnoremap <Leader>s :silent execute "grep! --cpp " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
-command! -nargs=+ Grepcpp :silent execute "grep! --cpp " shellescape(<q-args>) " ." | :copen
-command! -nargs=+ Greppy :silent execute "grep! --py " shellescape(<q-args>) " ." | :copen
+nnoremap <Leader>s :silent execute "grep! -U --cpp " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
+command! -nargs=+ Grepcpp :silent execute "grep! -U --cpp " shellescape(<q-args>) " ." | :copen
+command! -nargs=+ Greppy :silent execute "grep! -U --py " shellescape(<q-args>) " ." | :copen
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            youcompleteme                                                    "
@@ -182,7 +182,7 @@ let g:indentLine_char = '│'
 
 let g:rtagsUseLocationList = 0
 let g:rtagsUseDefaultMappings = 0
-nnoremap <Enter> :call rtags#JumpTo()<CR>
+nnoremap <Enter> :call rtags#JumpTo(g:SAME_WINDOW)<CR>
 nnoremap <Leader><Enter> :call rtags#FindRefs()<CR>
 nnoremap <Leader><Leader><Enter> g<C-]>
 
