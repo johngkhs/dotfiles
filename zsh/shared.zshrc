@@ -16,15 +16,15 @@ export EDITOR=vim
 autoload -U colors && colors
 setopt extended_glob
 unsetopt correct_all
-export KEYTIMEOUT=1
+export KEYTIMEOUT=10
 
 ###############################################################################################################
 #                                               history                                                       #
 ###############################################################################################################
 
-export HISTFILE="$HOME/.history"
-export HISTSIZE=250000
-export SAVEHIST=250000
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=100000
+export SAVEHIST=1000000
 setopt append_history
 setopt extended_history
 setopt inc_append_history
@@ -111,12 +111,6 @@ ZSH_HIGHLIGHT_STYLES[path_prefix]='fg=white,underline'
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=gray'
 
 ###############################################################################################################
-#                                                z                                                            #
-###############################################################################################################
-
-source "$HOME/.zsh/plugins/z/z.sh"
-
-###############################################################################################################
 #                                            zsh-extract                                                      #
 ###############################################################################################################
 
@@ -133,37 +127,73 @@ export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
 #                                             functions                                                       #
 ###############################################################################################################
 
-function j() {
-  cd "$(z -l | awk '{print $2}' | fzf)"
+c() {
+  cd "$@" && fasd -A "$@";
 }
 
-function d() {
-  local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) && cd "$dir"
-}
-
-function f() {
-  local file dir
-  file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
-}
-
-function k() {
+k() {
   local pid
   pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
-  if [[ "$pid" ]] then
+  if [[ "$pid" ]]
+  then
     kill -${1:-15} "$pid"
   fi
 }
 
-function h() {
-  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac -e | sed 's/ *[0-9]*[\* ]*//')
+d() {
+  local dir
+  dir="$(fasd -l -d | fzf +m)" && fasd -A "$dir" && cd "$dir"
 }
 
-function br() {
+d.() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) && fasd -A "$dir" && cd "$dir"
+}
+
+d/() {
+  local dir
+  dir="$(locate / | fzf +m)" && fasd -A "$dir" && cd "$dir"
+}
+
+v() {
+  local file
+  if [ $# -eq 0 ]
+  then
+        file="$(fasd -l -f | fzf +m)" && fasd -A "$file" && vim "$file"
+  else
+        vim "$@" && fasd -A "$@"
+  fi
+}
+
+v/() {
+  local file
+  file="$(locate / | fzf +m)" && fasd -A "$file" && vim "$file"
+}
+
+v.() {
+  local file
+  file=$(fzf +m) && fasd -A "$file" && vim "$file"
+}
+
+h() {
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +m +s --tac -e | sed 's/ *[0-9]*[\* ]*//')
+}
+
+_fzf_branch() {
   local branches branch
-  branches="$(git branch --all | grep -v HEAD)" &&
-  branch=$(echo "$branches" | fzf) &&
-  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+  branches=$(git branch | grep -v HEAD) &&
+  branch=$(echo "$branches" | fzf -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+  echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##"
+}
+
+db() {
+  local branch
+  branch="$(_fzf_branch)" && git branch -d "$branch"
+}
+
+br() {
+  local branch
+  branch="$(_fzf_branch)" && git checkout "$branch"
 }
 
 ###############################################################################################################
