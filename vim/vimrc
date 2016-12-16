@@ -34,7 +34,6 @@ Plugin 'Valloric/MatchTagAlways'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'junegunn/fzf.vim'
 Plugin 'junegunn/fzf'
-Plugin 'zirrostig/vim-schlepp'
 Plugin 'gioele/vim-autoswap'
 Plugin 'vim-airline/vim-airline'
 Plugin 'airblade/vim-gitgutter'
@@ -214,15 +213,6 @@ vnoremap <Leader>, :Commentary<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:autoswap_detect_tmux = 1
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                             schlepp                                                         "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-vmap <Up>    <Plug>SchleppUp
-vmap <Down>  <Plug>SchleppDown
-vmap <Left>  <Plug>SchleppLeft
-vmap <Right> <Plug>SchleppRight
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                             airline                                                         "

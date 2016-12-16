@@ -196,8 +196,12 @@ br() {
   branch="$(_fzf_branch)" && git checkout "$branch"
 }
 
-command_line_fzf() {
+h.() {
   (tmuxcomplete; fasd -l) | sort -u | fzf-tmux -d 90% +m
+}
+
+k.() {
+  (ag -g "") | fzf-tmux -d 90% +m
 }
 
 ###############################################################################################################
