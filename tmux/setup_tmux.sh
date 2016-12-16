@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit
-set -o nounset
-set -o xtrace
-
+set -o errexit -o nounset -o xtrace
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cp -n "$script_dir/shared.tmux.conf" "$script_dir/tmux.conf"
