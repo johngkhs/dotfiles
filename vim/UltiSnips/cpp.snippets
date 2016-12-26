@@ -1,0 +1,50 @@
+snippet po
+#pragma once
+
+${0}
+endsnippet
+
+snippet ns
+namespace $1 {
+$0
+}
+endsnippet
+
+snippet vec
+std::vector<$1> $0
+endsnippet
+
+snippet map
+std::map<$1, $2> $0
+endsnippet
+
+snippet umap
+std::unordered_map<$1, $2> $0
+endsnippet
+
+snippet cout
+std::cout << $0 << std::endl;
+endsnippet
+
+snippet if
+if ($1) {
+    $0
+}
+endsnippet
+
+snippet for
+for ($1; $2; $3) {
+    $0
+}
+endsnippet
+
+snippet cl
+class $1 final {
+public:
+    $1() {
+    }
+
+private:
+    $0
+}
+endsnippet

@@ -12,31 +12,33 @@ filetype off
 set rtp+=$HOME/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'gmarik/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'tpope/vim-commentary'
-Plugin 'PeterRincker/vim-argumentative'
-Plugin 'justinmk/vim-sneak'
-Plugin 'tomasr/molokai'
-Plugin 'yssl/QFEnter'
-Plugin 'johngkhs/vim-togglelist'
-Plugin 'johngkhs/CamelCaseMotion'
-Plugin 'alvan/vim-closetag'
-Plugin 'ntpeters/vim-better-whitespace'
-Plugin 'stefandtw/quickfix-reflector.vim'
-Plugin 'derekwyatt/vim-fswitch'
-Plugin 'jeetsukumaran/vim-filebeagle'
-Plugin 'haya14busa/incsearch.vim'
-Plugin 'tpope/vim-repeat'
 Plugin 'Yggdroot/indentLine.git'
-Plugin 'lyuts/vim-rtags'
-Plugin 'Valloric/MatchTagAlways'
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'junegunn/fzf.vim'
-Plugin 'junegunn/fzf'
-Plugin 'gioele/vim-autoswap'
-Plugin 'vim-airline/vim-airline'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'alvan/vim-closetag'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'derekwyatt/vim-fswitch'
+Plugin 'gioele/vim-autoswap'
+Plugin 'gmarik/Vundle.vim'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'jeetsukumaran/vim-filebeagle'
+Plugin 'johngkhs/CamelCaseMotion'
+Plugin 'johngkhs/vim-togglelist'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'justinmk/vim-sneak'
+Plugin 'lyuts/vim-rtags'
+Plugin 'ntpeters/vim-better-whitespace'
+Plugin 'PeterRincker/vim-argumentative'
+Plugin 'SirVer/ultisnips'
+Plugin 'stefandtw/quickfix-reflector.vim'
+Plugin 'tomasr/molokai'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-repeat'
+Plugin 'Valloric/MatchTagAlways'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'vim-airline/vim-airline'
+Plugin 'yssl/QFEnter'
+
 
 call vundle#end()
 filetype plugin indent on
@@ -221,6 +223,15 @@ let g:autoswap_detect_tmux = 1
 let g:airline_powerline_fonts = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                            ultisnips                                                        "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:ycm_use_ultisnips_completer = 1
+let g:UltiSnipsExpandTrigger="<C-l>"
+let g:UltiSnipsJumpForwardTrigger="<C-l>"
+let g:UltiSnipsJumpBackwardTrigger="<C-h>"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            clipboard                                                        "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -266,9 +277,6 @@ nnoremap <Leader>x "_x
 vnoremap <Leader>x "_x
 nnoremap <Leader>c "_c
 vnoremap <Leader>c "_c
-
-nnoremap <Up> ddkP
-nnoremap <Down> ddp
 
 nnoremap <Leader>J mzJ`z
 
