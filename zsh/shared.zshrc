@@ -152,7 +152,7 @@ d.() {
 
 d/() {
   local dir
-  dir="$(locate / | fzf +m)" && fasd -A "$dir" && cd "$dir"
+  dir="$(locate -i ${1:-/} | fzf +m)" && fasd -A "$dir" && cd "$dir"
 }
 
 v() {
@@ -167,7 +167,7 @@ v() {
 
 v/() {
   local file
-  file="$(locate / | fzf +m)" && fasd -A "$file" && vim "$file"
+  file="$(locate -i ${1:-/} | fzf +m)" && fasd -A "$file" && vim "$file"
 }
 
 v.() {
