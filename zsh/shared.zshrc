@@ -120,7 +120,7 @@ source "$HOME/.zsh/plugins/zsh-extract/extract.plugin.zsh"
 #                                               fzf                                                           #
 ###############################################################################################################
 
-export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_COMMAND='ag -U -g ""'
 export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
 
 ###############################################################################################################
