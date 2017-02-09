@@ -67,6 +67,7 @@ set wildignore+=*.o,*.a,*/bin/*
 set nofoldenable
 set lazyredraw ttyfast
 set laststatus=2
+set shortmess+=c
 hi Normal ctermbg=none
 hi NonText ctermbg=none
 
