@@ -7,6 +7,8 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting "$script_dir/dotz
 git clone https://github.com/rupa/z "$script_dir/dotzsh/plugins/z"
 git clone https://github.com/clvv/fasd /tmp/fasd
 cp /tmp/fasd/fasd "$HOME/usr/bin"
+git clone https://github.com/wellle/tmux-complete.vim /tmp/tmux-complete
+cp /tmp/tmux-complete/sh/tmuxcomplete "$HOME/usr/bin"
 git clone https://github.com/robbyrussell/oh-my-zsh.git /tmp/oh-my-zsh
 cp -R /tmp/oh-my-zsh/plugins/extract "$script_dir/dotzsh/plugins/zsh-extract"
 
