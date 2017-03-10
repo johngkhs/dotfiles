@@ -127,10 +127,6 @@ export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
 #                                             functions                                                       #
 ###############################################################################################################
 
-c() {
-  cd "$@" && fasd -A "$@";
-}
-
 k() {
   local pid
   pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
@@ -142,7 +138,12 @@ k() {
 
 d() {
   local dir
-  dir="$(fasd -l -d | fzf +m)" && fasd -A "$dir" && cd "$dir"
+  if [ $# -eq 0 ]
+  then
+        dir="$(fasd -l -d | sed s@$(pwd)\/@@ | fzf +m)" && fasd -A "$dir" && cd "$dir"
+  else
+        cd "$@" && fasd -A "$@"
+  fi
 }
 
 d.() {
