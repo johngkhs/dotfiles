@@ -12,13 +12,13 @@ cp /tmp/tmux-complete/sh/tmuxcomplete "$HOME/usr/bin"
 git clone https://github.com/robbyrussell/oh-my-zsh.git /tmp/oh-my-zsh
 cp -R /tmp/oh-my-zsh/plugins/extract "$script_dir/dotzsh/plugins/zsh-extract"
 
-cp -n "$script_dir/shared.zshrc" "$script_dir/zshrc"
+cp -n "$script_dir/zshrc.shared" "$script_dir/zshrc"
 
 platform="$(uname)"
 if [[ "$platform" == *Darwin* ]]; then
-    cat "$script_dir/osx.zshrc" >> "$script_dir/zshrc"
+    cat "$script_dir/zshrc.osx" >> "$script_dir/zshrc"
 else
-    cat "$script_dir/linux.zshrc" >> "$script_dir/zshrc"
+    cat "$script_dir/zshrc.linux" >> "$script_dir/zshrc"
 fi
 
 ln -s "$script_dir/dotzsh" "$HOME/.zsh"
