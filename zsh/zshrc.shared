@@ -16,6 +16,8 @@ export EDITOR=vim
 autoload -U colors && colors
 setopt extended_glob
 unsetopt correct_all
+setopt no_hup
+setopt no_check_jobs
 export KEYTIMEOUT=10
 
 ###############################################################################################################
@@ -200,6 +202,10 @@ br() {
 
 h.() {
   (tmuxcomplete | sort -u; fasd -l; ag --silent --depth 6 -g "") | fzf-tmux -d 90% +m
+}
+
+g.() {
+  git l | fzf-tmux -d 90% --ansi +m +s -e | awk '{print $1}'
 }
 
 ###############################################################################################################
