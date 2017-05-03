@@ -9,6 +9,7 @@
     b = branch -vv --sort=committerdate
     ba = branch -avv --sort=committerdate
     d = diff
+    dh = diff HEAD
     s = status
     ci = commit -a -m
     co = checkout

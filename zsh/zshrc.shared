@@ -54,6 +54,11 @@ for mode in visual viopp; do
   done
 done
 
+autoload -U select-word-match
+zle -N select-in-camel select-word-match
+bindkey -M viopp iu select-in-camel
+zstyle ':zle:*-camel' word-style normal-subword
+
 ###############################################################################################################
 #                                               vim mode                                                      #
 ###############################################################################################################

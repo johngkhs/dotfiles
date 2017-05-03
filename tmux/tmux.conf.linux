@@ -3,5 +3,5 @@
 #                                             linux clipboard                                                 #
 ###############################################################################################################
 
-bind -t vi-copy y copy-pipe "xclip"
+bind-key -T copy-mode-vi y send -X copy-pipe "xclip"
 bind-key p run "tmux set-buffer \"$(xclip -o -selection clipboard)\"; tmux paste-buffer"
