@@ -149,7 +149,7 @@ d() {
   then
         dir="$(fasd -l -d | sed s@$(pwd)\/@@ | fzf +m)" && fasd -A "$dir" && cd "$dir"
   else
-        cd "$@" && fasd -A "$@"
+        fasd -A "$@" && cd "$@"
   fi
 }
 compdef '_files -/' d
@@ -174,7 +174,7 @@ v() {
   then
         file="$(fasd -l -f | fzf +m)" && fasd -A "$file" && vim "$file"
   else
-        vim "$@" && fasd -A "$@"
+        fasd -A "$@" && vim "$@"
   fi
 }
 
@@ -190,7 +190,12 @@ v.() {
 
 c() {
   local target
-  target=$(fasd -l | fzf +m) && fasd -A "$target" && echo "$target" | xc
+  if [ $# -eq 0 ]
+  then
+    target=$(fasd -l | fzf +m) && fasd -A "$target" && echo "$target" | xc
+  else
+    fasd -A "$@" && echo "$@" | xc
+  fi
 }
 
 c/() {
