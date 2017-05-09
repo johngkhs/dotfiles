@@ -192,7 +192,7 @@ c() {
   local target
   if [ $# -eq 0 ]
   then
-    target=$(fasd -l | fzf +m) && fasd -A "$target" && echo "$target" | xc
+    target=$(fasd -l | fzf +m) && fasd -A "$target" && echo "$(realpath $target)" | xc
   else
     fasd -A "$@" && echo "$@" | xc
   fi
@@ -200,12 +200,12 @@ c() {
 
 c/() {
   local target
-  target="$(locate -i ${1:-/} | fzf +m)" && fasd -A "$target" && echo "$target" | xc
+  target="$(locate -i ${1:-/} | fzf +m)" && fasd -A "$target" && echo "$(realpath $target)" | xc
 }
 
 c.() {
   local target
-  target=$((_find_subdirs; ag --silent -g "") | fzf +m) && fasd -A "$target" && echo "$target" | xc
+  target=$((_find_subdirs; ag --silent -g "") | fzf +m) && fasd -A "$target" && echo "$(realpath $target)" | xc
 }
 
 h() {
