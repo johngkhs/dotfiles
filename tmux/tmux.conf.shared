@@ -33,8 +33,7 @@ bind-key -n C-l if-shell "$is_vim_pane" "send-keys C-l" "select-pane -R"
 bind -n C-p previous-window
 bind -n C-n next-window
 
-bind-key g send-keys -l "\"$(g.)\"" \; send-keys Tab
-bind-key h send-keys -l "\"$(k.)\"" \; send-keys Tab
+bind-key k send-keys -l "\"$(k.)\"" \; send-keys Tab
 bind-key y capture-pane \; save-buffer /tmp/pane.txt \; splitw -v -p 90 'vim + /tmp/pane.txt'
 bind-key -T copy-mode-vi v send -X begin-selection
 

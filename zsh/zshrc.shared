@@ -54,11 +54,6 @@ for mode in visual viopp; do
   done
 done
 
-autoload -U select-word-match
-zle -N select-in-camel select-word-match
-bindkey -M viopp iu select-in-camel
-zstyle ':zle:*-camel' word-style normal-subword
-
 ###############################################################################################################
 #                                               vim mode                                                      #
 ###############################################################################################################
@@ -143,80 +138,84 @@ k() {
   fi
 }
 
-d() {
-  local dir
-  if [ $# -eq 0 ]
-  then
-        dir="$(fasd -l -d | sed s@$(pwd)\/@@ | fzf +m)" && fasd -A "$dir" && cd "$dir"
-  else
-        fasd -A "$@" && cd "$@"
-  fi
-}
-compdef '_files -/' d
-
 _find_subdirs() {
   find . -path '*/\.*' -prune -o -type d -print 2> /dev/null
 }
 
+_find_subfiles() {
+  ag --silent -g ''
+}
+
+_locate() {
+  locate -i "${1:-/}"
+}
+
+_cd() {
+  fasd -A "$@" && cd "$@"
+}
+
+_vim() {
+  fasd -A "$@" && vim "$@"
+}
+
+_reverse_sorted_fzf() {
+  fzf +m +s --tac -e
+}
+
+_fzf() {
+  fzf +m
+}
+
+d() {
+  local dir
+  if [ $# -eq 0 ]
+  then
+        dir="$(fasd -l -d | sed s@$(pwd)\/@@ | _fzf)" && _cd "$dir"
+  else
+        _cd "$@"
+  fi
+}
+compdef '_files -/' d
+
 d.() {
   local dir
-  dir=$(_find_subdirs | fzf +m) && fasd -A "$dir" && cd "$dir"
+  dir="$(_find_subdirs | _fzf)" && _cd "$dir"
 }
 
 d/() {
   local dir
-  dir="$(locate -i ${1:-/} | fzf +m)" && fasd -A "$dir" && cd "$dir"
+  dir="$(_locate $@ | _fzf)" && _cd "$dir"
 }
 
 v() {
   local file
   if [ $# -eq 0 ]
   then
-        file="$(fasd -l -f | fzf +m)" && fasd -A "$file" && vim "$file"
+        file="$(fasd -l -f | _fzf)" && _vim "$file"
   else
-        fasd -A "$@" && vim "$@"
+        _vim "$@"
   fi
 }
 
 v/() {
   local file
-  file="$(locate -i ${1:-/} | fzf +m)" && fasd -A "$file" && vim "$file"
+  file="$(_locate $@ | _fzf)" && _vim "$file"
 }
 
 v.() {
   local file
-  file=$(fzf +m) && fasd -A "$file" && vim "$file"
-}
-
-c() {
-  local target
-  if [ $# -eq 0 ]
-  then
-    target=$(fasd -l | fzf +m) && fasd -A "$target" && echo "$(realpath $target)" | xc
-  else
-    fasd -A "$@" && echo "$@" | xc
-  fi
-}
-
-c/() {
-  local target
-  target="$(locate -i ${1:-/} | fzf +m)" && fasd -A "$target" && echo "$(realpath $target)" | xc
-}
-
-c.() {
-  local target
-  target=$((_find_subdirs; ag --silent -g "") | fzf +m) && fasd -A "$target" && echo "$(realpath $target)" | xc
+  file="$(_find_subfiles | _fzf)" && _vim "$file"
 }
 
 h() {
-  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +m +s --tac -e | sed 's/ *[0-9]*[\* ]*//')
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | _reverse_sorted_fzf | sed 's/ *[0-9]*[\* ]*//')
 }
 
 _fzf_branch() {
   local branches branch
   branches=$(git branch | grep -v HEAD) &&
   branch=$(echo "$branches" | fzf -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-  echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##"
+  echo "$branch" | sed "s/.* //" | sed "s@remotes/[^/]*/@@"
 }
 
 db() {
@@ -230,11 +229,7 @@ br() {
 }
 
 k.() {
-  (tmuxcomplete | sort -u; fasd -l; ag --silent --depth 6 -g "") | fzf-tmux -d 90% +m
-}
-
-g.() {
-  git l | fzf-tmux -d 90% --ansi +m +s -e | awk '{print $1}'
+  (tmuxcomplete | sort -u; fasd -l; _find_subfiles) | fzf-tmux -d 90% +m
 }
 
 ###############################################################################################################
