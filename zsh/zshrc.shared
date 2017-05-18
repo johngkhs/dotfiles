@@ -14,6 +14,7 @@ export EDITOR=vim
 ###############################################################################################################
 
 autoload -U colors && colors
+eval "$(dircolors $HOME/.zsh/dircolors-solarized/dircolors.256dark)"
 setopt extended_glob
 unsetopt correct_all
 setopt no_hup
@@ -78,14 +79,8 @@ setopt menu_complete
 zmodload zsh/complist
 
 zstyle ':completion:*' menu select=1
-zstyle ':completion:*' matcher-list '' \
-  'm:{a-z\-}={A-Z\_}' \
-  'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
-  'r:[[:ascii:]]||[[:ascii:]]=** r:|=* m:{a-z\-}={A-Z\_}'
-zstyle ':completion:*' completer _complete _approximate
-zstyle ':completion:*:approximate:::' max-errors 1 numeric
-zstyle -e ':completion:*:default' list-colors 'reply=("${PREFIX:+=(#bi)($PREFIX:t)(?)*==02=01}:${(s.:.)LS_COLORS}")'
-zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,command -w -w'
+zstyle ':completion:*' matcher-list '' 'r:|?=** m:{a-z\-}={A-Z\_}'
+zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' file-sort modification
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 
@@ -98,25 +93,17 @@ bindkey -M vicmd 'j' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 
 ###############################################################################################################
-#                                         zsh-syntax-highlighting                                             #
+#                                        fast-syntax-highlighting                                             #
 ###############################################################################################################
 
-source "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
-ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red,bold'
-ZSH_HIGHLIGHT_STYLES[alias]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[builtin]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[function]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[path]='fg=white,bold'
-ZSH_HIGHLIGHT_STYLES[path_prefix]='fg=white,underline'
-ZSH_HIGHLIGHT_STYLES[globbing]='fg=gray'
+source "$HOME/.zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+FAST_HIGHLIGHT_STYLES[path]='fg=white,bold'
 
 ###############################################################################################################
-#                                            zsh-extract                                                      #
+#                                              extract                                                        #
 ###############################################################################################################
 
-source "$HOME/.zsh/plugins/zsh-extract/extract.plugin.zsh"
+source "$HOME/.zsh/plugins/extract/extract.plugin.zsh"
 
 ###############################################################################################################
 #                                               fzf                                                           #
