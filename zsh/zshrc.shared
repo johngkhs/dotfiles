@@ -14,7 +14,8 @@ export EDITOR=vim
 ###############################################################################################################
 
 autoload -U colors && colors
-eval "$(dircolors $HOME/.zsh/dircolors-solarized/dircolors.256dark)"
+whence dircolors >/dev/null && eval "$(dircolors $HOME/.zsh/dircolors-solarized/dircolors.256dark)"
+whence gdircolors >/dev/null && eval "$(gdircolors $HOME/.zsh/dircolors-solarized/dircolors.256dark)"
 setopt extended_glob
 unsetopt correct_all
 setopt no_hup

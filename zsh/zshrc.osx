@@ -6,3 +6,5 @@
 xc() {
   pbcopy
 }
+
+alias ls='gls --color=auto'
