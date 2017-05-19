@@ -7,4 +7,4 @@ xc() {
   pbcopy
 }
 
-alias ls='gls --color=auto'
+whence gls >/dev/null && alias ls='gls --color=auto'
