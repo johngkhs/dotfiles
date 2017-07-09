@@ -130,31 +130,31 @@ k() {
   fi
 }
 
-_find_subdirs() {
+find_subdirs() {
   find . -path '*/\.*' -prune -o -type d -print 2> /dev/null
 }
 
-_find_subfiles() {
+find_subfiles() {
   ag --silent -g ''
 }
 
-_locate() {
+locate_ignorecase() {
   locate -i "${1:-/}"
 }
 
-_cd() {
+fasd_cd() {
   fasd -A "$@" && cd "$@"
 }
 
-_vim() {
+fasd_vim() {
   fasd -A "$@" && vim "$@"
 }
 
-_reverse_sorted_fzf() {
+reverse_sorted_fzf() {
   fzf +m +s --tac -e
 }
 
-_fzf() {
+single_select_fzf() {
   fzf +m
 }
 
@@ -162,45 +162,45 @@ d() {
   local dir
   if [ $# -eq 0 ]
   then
-        dir="$(fasd -l -d | sed s@$(pwd)\/@@ | _fzf)" && _cd "$dir"
+        dir="$(fasd -l -d | sed s@$(pwd)\/@@ | single_select_fzf)" && fasd_cd "$dir"
   else
-        _cd "$@"
+        fasd_cd "$@"
   fi
 }
 compdef '_files -/' d
 
 d.() {
   local dir
-  dir="$(_find_subdirs | _fzf)" && _cd "$dir"
+  dir="$(find_subdirs | single_select_fzf)" && fasd_cd "$dir"
 }
 
 d/() {
   local dir
-  dir="$(_locate $@ | _fzf)" && _cd "$dir"
+  dir="$(locate_ignorecase $@ | single_select_fzf)" && fasd_cd "$dir"
 }
 
 v() {
   local file
   if [ $# -eq 0 ]
   then
-        file="$(fasd -l -f | _fzf)" && _vim "$file"
+        file="$(fasd -l -f | single_select_fzf)" && fasd_vim "$file"
   else
-        _vim "$@"
+        fasd_vim "$@"
   fi
 }
 
 v/() {
   local file
-  file="$(_locate $@ | _fzf)" && _vim "$file"
+  file="$(locate_ignorecase $@ | single_select_fzf)" && fasd_vim "$file"
 }
 
 v.() {
   local file
-  file="$(_find_subfiles | _fzf)" && _vim "$file"
+  file="$(find_subfiles | single_select_fzf)" && fasd_vim "$file"
 }
 
 h() {
-  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | _reverse_sorted_fzf | sed 's/ *[0-9]*[\* ]*//')
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | reverse_sorted_fzf | sed 's/ *[0-9]*[\* ]*//')
 }
 
 _fzf_branch() {
@@ -221,7 +221,7 @@ br() {
 }
 
 k.() {
-  (tmuxcomplete | sort -u; fasd -l; _find_subfiles) | fzf-tmux -d 90% +m
+  (tmuxcomplete | sort -u; fasd -l; find_subfiles) | fzf-tmux -d 90% +m
 }
 
 ###############################################################################################################
