@@ -12,9 +12,10 @@ git clone https://github.com/jaspernbrouwer/powerline-gitstatus /tmp/powerline_g
 cd /tmp/powerline_gitstatus
 python setup.py install --home="$HOME/usr"
 
-echo '#!/usr/bin/env bash' > "$script_dir/source_powerline.zsh"
-echo "source $(find $HOME/usr/lib/python -name powerline.zsh -print -quit)" >> "$script_dir/source_powerline.zsh"
-chmod +x "$script_dir/source_powerline.zsh"
-mkdir -p "$HOME/.config"
+echo '#!/usr/bin/env bash' > "/tmp/source_powerline.zsh"
+echo "source $(find $HOME/usr/lib/python -name powerline.zsh -print -quit)" >> "/tmp/source_powerline.zsh"
+chmod +x "/tmp/source_powerline.zsh"
 
-ln -s "$script_dir" "$HOME/.config/powerline"
+mkdir -p "$HOME/.config/powerline"
+cp -n "/tmp/source_powerline.zsh" "$HOME/.config/powerline"
+cp -R -n . "$HOME/.config/powerline"
