@@ -6,3 +6,5 @@
 xc() {
   xclip -selection c
 }
+
+alias ls='ls --color=auto'
