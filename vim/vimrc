@@ -29,7 +29,6 @@ Plugin 'justinmk/vim-sneak'
 Plugin 'lyuts/vim-rtags'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'PeterRincker/vim-argumentative'
-Plugin 'SirVer/ultisnips'
 Plugin 'stefandtw/quickfix-reflector.vim'
 Plugin 'tomasr/molokai'
 Plugin 'tpope/vim-commentary'
@@ -222,15 +221,6 @@ let g:autoswap_detect_tmux = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:airline_powerline_fonts = 1
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                            ultisnips                                                        "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:ycm_use_ultisnips_completer = 1
-let g:UltiSnipsExpandTrigger="<C-l>"
-let g:UltiSnipsJumpForwardTrigger="<C-l>"
-let g:UltiSnipsJumpBackwardTrigger="<C-h>"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            clipboard                                                        "
