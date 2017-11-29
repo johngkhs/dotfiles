@@ -46,6 +46,8 @@ filetype plugin indent on
 "                                          general settings                                                   "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+let mapleader = "\<Space>"
+
 runtime macros/matchit.vim
 syntax on
 colorscheme molokai
@@ -81,7 +83,7 @@ set tags=./tags;
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set grepprg=ag\ --nogroup\ --nocolor
-nnoremap <Leader>s :silent execute "grep! -U --cpp " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
+nnoremap <Leader>s :silent execute "grep! -U --cpp --py " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
 command! -nargs=+ Grepcpp :silent execute "grep! -U --cpp " shellescape(<q-args>) " ." | :copen
 command! -nargs=+ Greppy :silent execute "grep! -U --py " shellescape(<q-args>) " ." | :copen
 
@@ -233,8 +235,6 @@ nnoremap <Leader>p o<Space><Backspace><Esc>:set paste<CR>p:set nopaste<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                         general mappings                                                    "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let mapleader = "\<Space>"
 
 inoremap jk <Esc>
 cnoremap jk <C-c>
