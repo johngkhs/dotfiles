@@ -25,15 +25,19 @@ set-option -g pane-active-border-bg blue
 bind-key s split-window -v
 bind-key v split-window -h
 
-is_vim_pane='echo "#{pane_current_command}" | grep -iqE "(^|\/)g?(view|n?vim?x?)(diff)?$"'
-bind-key -n C-h if-shell "$is_vim_pane" "send-keys C-h" "select-pane -L"
-bind-key -n C-j if-shell "$is_vim_pane" "send-keys C-j" "select-pane -D"
-bind-key -n C-k if-shell "$is_vim_pane" "send-keys C-k" "select-pane -U"
-bind-key -n C-l if-shell "$is_vim_pane" "send-keys C-l" "select-pane -R"
+is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
+bind-key -n C-h if-shell "$is_vim" "send-keys C-h"  "select-pane -L"
+bind-key -n C-j if-shell "$is_vim" "send-keys C-j"  "select-pane -D"
+bind-key -n C-k if-shell "$is_vim" "send-keys C-k"  "select-pane -U"
+bind-key -n C-l if-shell "$is_vim" "send-keys C-l"  "select-pane -R"
+bind-key -T copy-mode-vi C-h select-pane -L
+bind-key -T copy-mode-vi C-j select-pane -D
+bind-key -T copy-mode-vi C-k select-pane -U
+bind-key -T copy-mode-vi C-l select-pane -R
+
 bind -n C-p previous-window
 bind -n C-n next-window
 
 bind-key k send-keys -l "\"$(k.)\"" \; send-keys Tab
 bind-key y capture-pane \; save-buffer /tmp/pane.txt \; splitw -v -p 90 'vim + /tmp/pane.txt'
 bind-key -T copy-mode-vi v send -X begin-selection
-
