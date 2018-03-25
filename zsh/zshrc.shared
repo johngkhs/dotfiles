@@ -162,7 +162,7 @@ d() {
   local dir
   if [ $# -eq 0 ]
   then
-        dir="$(fasd -l -d | sed s@$(pwd)\/@@ | single_select_fzf)" && fasd_cd "$dir"
+        dir=$(fasd -l -d | sed "s@$(pwd)\/@@" | single_select_fzf) && fasd_cd "$dir"
   else
         fasd_cd "$@"
   fi
