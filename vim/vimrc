@@ -12,11 +12,8 @@ filetype off
 set rtp+=$HOME/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'Yggdroot/indentLine.git'
-Plugin 'airblade/vim-gitgutter'
 Plugin 'alvan/vim-closetag'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'derekwyatt/vim-fswitch'
 Plugin 'gioele/vim-autoswap'
 Plugin 'gmarik/Vundle.vim'
 Plugin 'haya14busa/incsearch.vim'
@@ -27,7 +24,6 @@ Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'justinmk/vim-sneak'
 Plugin 'lyuts/vim-rtags'
-Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'PeterRincker/vim-argumentative'
 Plugin 'stefandtw/quickfix-reflector.vim'
 Plugin 'tomasr/molokai'
@@ -35,7 +31,6 @@ Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-repeat'
 Plugin 'Valloric/MatchTagAlways'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'vim-airline/vim-airline'
 Plugin 'yssl/QFEnter'
 
 
@@ -173,13 +168,6 @@ map / <Plug>(incsearch-forward)
 map ? <Plug>(incsearch-backward)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                            indentline                                                       "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:indentLine_color_term = 245
-let g:indentLine_char = '│'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                              rtags                                                          "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -217,12 +205,6 @@ vnoremap <Leader>, :Commentary<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:autoswap_detect_tmux = 1
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                             airline                                                         "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:airline_powerline_fonts = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            clipboard                                                        "
@@ -283,17 +265,6 @@ nnoremap Y y$
 augroup save_clipboard_contents_on_exit
     autocmd!
     autocmd VimLeave * call system("xclip -in -selection clipboard", getreg('+'))
-augroup END
-
-augroup strip_trailing_whitespace_on_save
-    autocmd!
-    autocmd FileType cpp autocmd BufWritePre <buffer> StripWhitespace
-augroup END
-
-augroup cpp_header_file_switching
-  autocmd!
-  autocmd BufEnter *.cc let b:fswitchdst = 'h'
-  autocmd BufEnter *.h let b:fswitchdst = 'cc'
 augroup END
 
 augroup fullscreen_quickfix
