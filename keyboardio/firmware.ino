@@ -8,16 +8,17 @@
 #include "Kaleidoscope-LED-ActiveModColor.h"
 #include "Kaleidoscope-Escape-OneShot.h"
 
-enum { M_FN_LED, M_FN_ANY, M_FN_EQUALS,
-       M_PAGEUP, M_FN_A, M_FN_F, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_APOSTROPHE,
+enum { M_PROG, M_FN_LED, M_FN_ANY, M_FN_O, M_FN_EQUALS,
+       M_PAGEUP, M_FN_A, M_FN_F, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
        M_PAGEDOWN, M_ESCAPE, M_FN_ESCAPE, M_FN_BUTTERFLY, M_BUTTERFLY };
 enum { QWERTY, NUMPAD, FUNCTION };
 
 KEYMAPS(
+
   [QWERTY] = KEYMAP_STACKED
-  (OSM(LeftGui),  Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
+  (M(M_PROG),     Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
    Key_Backtick,  Key_Q, Key_W, Key_E, Key_R, Key_T, M(M_TAB),
-   M(M_PAGEUP),   Key_A, Key_S, Key_D, Key_F, Key_G,
+   OSM(LeftGui),  Key_A, Key_S, Key_D, Key_F, Key_G,
    M(M_PAGEDOWN), Key_Z, Key_X, Key_C, Key_V, Key_B, M(M_ESCAPE),
    OSM(LeftControl), Key_Backspace, OSM(LeftShift), Key_Tab,
    OSL(FUNCTION),
@@ -52,13 +53,14 @@ KEYMAPS(
    ___, Key_Delete, ___, ___,
    ___,
 
-   M(M_FN_ANY),       Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   M(M_FN_ENTER),     Consumer_ScanNextTrack, Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket, M(M_FN_EQUALS),
-                      Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              M(M_APOSTROPHE),
-   M(M_FN_BUTTERFLY), Consumer_Mute,          Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
+   M(M_FN_ANY),       Key_F6,                  Key_F7,                     Key_F8,                   Key_F9,          Key_F10,           Key_F11,
+   M(M_FN_ENTER),     Consumer_PlaySlashPause, Consumer_ScanPreviousTrack, Consumer_ScanNextTrack,   M(M_FN_O),       ___,               M(M_FN_EQUALS),
+                      Key_LeftArrow,           Key_DownArrow,              Key_UpArrow,              Key_RightArrow,  M(M_FN_SEMICOLON), M(M_FN_APOSTROPHE),
+   M(M_FN_BUTTERFLY), Consumer_Mute,           Consumer_VolumeDecrement,   Consumer_VolumeIncrement, ___,             Key_Backslash,     Key_Pipe,
    ___, ___, Key_Enter, ___,
    ___)
-)
+
+	)
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   if (!keyIsPressed(keyState)) {
@@ -66,19 +68,21 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   }
   switch (macroIndex) {
     case M_TAB: return MACRODOWN(D(LeftShift), T(9), U(LeftShift));
-    case M_ENTER: return MACRODOWN(D(LeftShift), T(0), U(LeftShift)); 
+    case M_ENTER: return MACRODOWN(D(LeftShift), T(0), U(LeftShift));
     case M_ESCAPE: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift));
     case M_BUTTERFLY: return MACRODOWN(D(LeftShift), T(RightBracket), U(LeftShift));
-    case M_PAGEUP: return MACRODOWN(D(LeftControl), T(Backspace), U(LeftControl));
-    case M_PAGEDOWN: return MACRODOWN(D(LeftShift), T(Home), T(Backspace), U(LeftShift));
-    case M_APOSTROPHE: return MACRODOWN(T(Minus), D(LeftShift), T(Period), U(LeftShift));
+    case M_PROG: return MACRODOWN(D(LeftShift), T(Home), T(Backspace), U(LeftShift));
+    case M_PAGEDOWN: return MACRODOWN(D(LeftControl), T(Backspace), U(LeftControl));
+    case M_FN_O: return MACRODOWN(T(Minus), D(LeftShift), T(Period), U(LeftShift));
+    case M_FN_SEMICOLON: return MACRODOWN(D(LeftShift), T(Quote), U(LeftShift), D(LeftShift), T(Quote), U(LeftShift), T(LeftArrow));
+    case M_FN_APOSTROPHE: return MACRODOWN(T(Quote), T(Quote), T(LeftArrow));
     case M_FN_EQUALS: return MACRODOWN(T(Equals), T(Equals));
     case M_FN_A: return MACRODOWN(D(LeftControl), T(LeftArrow), U(LeftControl));
     case M_FN_F: return MACRODOWN(D(LeftControl), T(RightArrow), U(LeftControl));
-    case M_FN_TAB: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(9), U(LeftShift), T(LeftArrow));
-    case M_FN_ENTER: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift)); 
-    case M_FN_ESCAPE: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift), T(LeftArrow)); 
-    case M_FN_BUTTERFLY: return MACRODOWN(T(Escape), D(LeftShift), T(O), U(LeftShift), D(LeftShift), T(LeftBracket), U(LeftShift), T(Enter),
+    case M_FN_TAB: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift), T(LeftArrow));
+    case M_FN_ENTER: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift));
+    case M_FN_ESCAPE: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift), T(LeftArrow));
+    case M_FN_BUTTERFLY: return MACRODOWN(T(Escape), T(O), D(LeftShift), T(LeftBracket), U(LeftShift), T(Enter),
       D(LeftShift), T(RightBracket), U(LeftShift), T(Escape), T(UpArrow), D(LeftShift), T(A), U(LeftShift), T(Enter));
     case M_FN_LED: return MACRODOWN(T(LeftBracket), T(RightBracket), T(LeftArrow));
     case M_FN_ANY: return MACRODOWN(T(LeftBracket), T(RightBracket));
@@ -112,9 +116,9 @@ KALEIDOSCOPE_INIT_PLUGINS(
   LEDControl,
   LEDOff,
   NumPad,
-  Macros,
   OneShot,
   EscapeOneShot,
+  Macros,
   ActiveModColorEffect
 );
 
