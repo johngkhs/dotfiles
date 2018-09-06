@@ -8,7 +8,7 @@
 #include "Kaleidoscope-LED-ActiveModColor.h"
 #include "Kaleidoscope-Escape-OneShot.h"
 
-enum { M_PROG, M_FN_LED, M_FN_ANY, M_FN_EQUALS,
+enum { M_FN_LED, M_FN_ANY, M_FN_EQUALS,
        M_PAGEUP, M_FN_A, M_FN_F, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
        M_PAGEDOWN, M_ESCAPE, M_FN_ESCAPE, M_FN_BUTTERFLY, M_BUTTERFLY, M_FN_COMMA, M_FN_PERIOD };
 enum { QWERTY, NUMPAD, FUNCTION };
@@ -16,9 +16,9 @@ enum { QWERTY, NUMPAD, FUNCTION };
 KEYMAPS(
 
   [QWERTY] = KEYMAP_STACKED
-  (M(M_PROG),     Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
+  (OSM(LeftGui),  Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
    Key_Backtick,  Key_Q, Key_W, Key_E, Key_R, Key_T, M(M_TAB),
-   OSM(LeftGui),  Key_A, Key_S, Key_D, Key_F, Key_G,
+   M(M_PAGEUP),   Key_A, Key_S, Key_D, Key_F, Key_G,
    M(M_PAGEDOWN), Key_Z, Key_X, Key_C, Key_V, Key_B, M(M_ESCAPE),
    OSM(LeftControl), Key_Backspace, OSM(LeftShift), Key_Tab,
    OSL(FUNCTION),
@@ -71,8 +71,8 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     case M_ENTER: return MACRODOWN(D(LeftShift), T(0), U(LeftShift));
     case M_ESCAPE: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift));
     case M_BUTTERFLY: return MACRODOWN(D(LeftShift), T(RightBracket), U(LeftShift));
-    case M_PROG: return MACRODOWN(D(LeftShift), T(Home), T(Backspace), U(LeftShift));
-    case M_PAGEDOWN: return MACRODOWN(D(LeftControl), T(Backspace), U(LeftControl));
+    case M_PAGEUP: return MACRODOWN(D(LeftControl), T(Backspace), U(LeftControl));
+    case M_PAGEDOWN: return MACRODOWN(D(LeftShift), T(Home), T(Backspace), U(LeftShift));
     case M_FN_SEMICOLON: return MACRODOWN(D(LeftShift), T(Quote), U(LeftShift), D(LeftShift), T(Quote), U(LeftShift), T(LeftArrow));
     case M_FN_APOSTROPHE: return MACRODOWN(T(Quote), T(Quote), T(LeftArrow));
     case M_FN_EQUALS: return MACRODOWN(T(Equals), T(Equals));
