@@ -7,6 +7,7 @@
 #include "Kaleidoscope-OneShot.h"
 #include "Kaleidoscope-LED-ActiveModColor.h"
 #include "Kaleidoscope-Escape-OneShot.h"
+#include "Kaleidoscope-TopsyTurvy.h"
 
 enum { M_FN_LED, M_FN_ANY, M_FN_EQUALS,
        M_PAGEUP, M_FN_A, M_FN_F, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
@@ -26,7 +27,7 @@ KEYMAPS(
    Key_RightBracket, Key_6, Key_7, Key_8,     Key_9,      Key_0,         LockLayer(NUMPAD),
    M(M_ENTER),       Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
                      Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
-   M(M_BUTTERFLY),   Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     Key_Minus,
+   M(M_BUTTERFLY),   Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     TOPSY(Minus),
    Key_Escape, OSM(RightShift), Key_Spacebar, OSM(RightAlt),
    OSL(FUNCTION)),
 
@@ -60,7 +61,7 @@ KEYMAPS(
    ___, ___, Key_Enter, ___,
    ___)
 
-	)
+  )
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   if (!keyIsPressed(keyState)) {
@@ -120,6 +121,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   OneShot,
   EscapeOneShot,
   Macros,
+  TopsyTurvy,
   ActiveModColorEffect
 );
 
