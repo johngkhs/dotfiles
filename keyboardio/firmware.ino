@@ -1,7 +1,6 @@
 #include "Kaleidoscope.h"
 #include "Kaleidoscope-Macros.h"
 #include "Kaleidoscope-NumPad.h"
-#include "LED-Off.h"
 #include "Kaleidoscope-LEDEffect-BootGreeting.h"
 #include "Kaleidoscope-HostPowerManagement.h"
 #include "Kaleidoscope-OneShot.h"
@@ -17,10 +16,10 @@ enum { QWERTY, NUMPAD, FUNCTION };
 KEYMAPS(
 
   [QWERTY] = KEYMAP_STACKED
-  (OSM(LeftGui),  Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
+  (___,  Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
    Key_Backtick,  Key_Q, Key_W, Key_E, Key_R, Key_T, M(M_TAB),
    M(M_PAGEUP),   Key_A, Key_S, Key_D, Key_F, Key_G,
-   M(M_PAGEDOWN), Key_Z, Key_X, Key_C, Key_V, Key_B, M(M_ESCAPE),
+   OSM(LeftGui), Key_Z, Key_X, Key_C, Key_V, Key_B, M(M_ESCAPE),
    OSM(LeftControl), Key_Backspace, OSM(LeftShift), Key_Tab,
    OSL(FUNCTION),
 
@@ -49,7 +48,7 @@ KEYMAPS(
   [FUNCTION] =  KEYMAP_STACKED
   (___,                     Key_F1,          Key_F2,     Key_F3, Key_F4,    Key_F5, M(M_FN_LED),
    ___,                     ___,             ___,        ___,    ___,       ___,    M(M_FN_TAB),
-   Key_Home,                M(M_FN_A),       ___,        ___,    M(M_FN_F), ___,
+   M(M_PAGEDOWN),           M(M_FN_A),       ___,        ___,    M(M_FN_F), ___,
    Consumer_PlaySlashPause, Key_PrintScreen, Key_Insert, ___,    ___,       ___,    M(M_FN_ESCAPE),
    ___, Key_Delete, ___, ___,
    ___,
