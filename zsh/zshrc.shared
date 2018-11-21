@@ -114,7 +114,7 @@ source "$HOME/.zsh/plugins/extract/extract.plugin.zsh"
 #                                               fzf                                                           #
 ###############################################################################################################
 
-export FZF_DEFAULT_COMMAND='ag -U -g ""'
+export FZF_DEFAULT_COMMAND='rg --files'
 export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
 
 ###############################################################################################################
@@ -135,7 +135,7 @@ find_subdirs() {
 }
 
 find_subfiles() {
-  ag --silent -g ''
+  rg --files
 }
 
 locate_ignorecase() {

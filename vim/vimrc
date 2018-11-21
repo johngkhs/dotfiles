@@ -74,13 +74,12 @@ hi NonText ctermbg=none
 set tags=./tags;
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                           silversearcher                                                   "
+"                                             ripgrep                                                         "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-set grepprg=ag\ --nogroup\ --nocolor
-nnoremap <Leader>s :silent execute "grep! -U --cpp --py " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
-command! -nargs=+ Grepcpp :silent execute "grep! -U --cpp " shellescape(<q-args>) " ." | :copen
-command! -nargs=+ Greppy :silent execute "grep! -U --py " shellescape(<q-args>) " ." | :copen
+set grepprg=rg\ --vimgrep\ --no-heading
+nnoremap <Leader>s :silent execute "grep! " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
+command! -nargs=+ RgText :silent execute "grep! " shellescape(<q-args>) " ." | :copen
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            youcompleteme                                                    "
@@ -223,7 +222,7 @@ cnoremap jk <C-c>
 inoremap jj ()<Esc>i
 inoremap kk ()
 inoremap jl <Esc>A<Space>{<CR>}<Esc><Up>A<CR>
-map <Leader>t :Grepcpp 
+map <Leader>t :RgText 
 
 map J 20j
 map K 20k
