@@ -220,7 +220,7 @@ br() {
   branch="$(_fzf_branch)" && git checkout "$branch"
 }
 
-k.() {
+f.() {
   (tmuxcomplete | sort -u; fasd -l; find_subfiles) | fzf-tmux -d 90% +m
 }
 
