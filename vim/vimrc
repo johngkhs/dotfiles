@@ -77,7 +77,7 @@ set tags=./tags;
 "                                             ripgrep                                                         "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-set grepprg=rg\ --vimgrep\ --no-heading
+set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 nnoremap <Leader>s :silent execute "grep! " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
 command! -nargs=+ RgText :silent execute "grep! " shellescape(<q-args>) " ." | :copen
 
