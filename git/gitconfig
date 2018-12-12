@@ -1,6 +1,6 @@
 [core]
     editor = vim
-    pager = "less -F"
+	pager = diff-so-fancy | less --tabs=4 -RFX
 [push]
     default = simple
 [alias]
@@ -14,6 +14,8 @@
     ci = commit -a -m
     co = checkout
     co- = checkout -- .
+    re = reset
+    re- = reset -- .
     a = add -A
     db = branch -d
     cb = "!create_branch() { set -e; git pull; git checkout -b $1; git push -u origin $1; }; create_branch"

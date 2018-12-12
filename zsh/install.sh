@@ -12,6 +12,11 @@ cp /tmp/tmux-complete/sh/tmuxcomplete "$HOME/usr/bin"
 [[ -d /tmp/oh-my-zsh ]] || git clone https://github.com/robbyrussell/oh-my-zsh.git /tmp/oh-my-zsh
 cp -R /tmp/oh-my-zsh/plugins/extract "$HOME/.zsh/plugins/extract"
 
+wget https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy -O "$HOME/usr/bin/diff-so-fancy"
+chmod +x "$HOME/usr/bin/diff-so-fancy"
+wget https://raw.githubusercontent.com/raylee/tldr/master/tldr -O "$HOME/usr/bin/tldr"
+chmod +x "$HOME/usr/bin/tldr"
+
 cp "$script_dir/zshrc.shared" "$HOME/.zshrc"
 
 platform="$(uname)"

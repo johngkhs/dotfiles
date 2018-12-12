@@ -230,3 +230,5 @@ f.() {
 
 alias g='git'
 alias x='extract'
+alias b='bat'
+alias fd='find_subfiles | rg'
