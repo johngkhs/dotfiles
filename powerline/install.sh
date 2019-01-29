@@ -6,7 +6,7 @@ export PYTHONPATH="$HOME/usr/lib/python:${PYTHONPATH-}"
 [[ -d /tmp/powerline ]] || git clone https://github.com/powerline/powerline /tmp/powerline
 cd /tmp/powerline
 python setup.py install --home="$HOME/usr"
-cp -n /tmp/powerline/scripts/powerline "$HOME/usr/bin"
+cp /tmp/powerline/scripts/powerline "$HOME/usr/bin"
 
 [[ -d /tmp/powerline_gitstatus ]] || git clone https://github.com/jaspernbrouwer/powerline-gitstatus /tmp/powerline_gitstatus
 cd /tmp/powerline_gitstatus
