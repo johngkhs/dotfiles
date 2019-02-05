@@ -18,4 +18,6 @@ chmod +x "/tmp/source_powerline.zsh"
 
 mkdir -p "$HOME/.config/powerline"
 cp "/tmp/source_powerline.zsh" "$HOME/.config/powerline"
-cp -R . "$HOME/.config/powerline"
+
+cd "$script_dir"
+cp -R config.json themes colorschemes "$HOME/.config/powerline"
