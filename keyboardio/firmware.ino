@@ -6,7 +6,6 @@
 #include "Kaleidoscope-OneShot.h"
 #include "Kaleidoscope-LED-ActiveModColor.h"
 #include "Kaleidoscope-Escape-OneShot.h"
-#include "Kaleidoscope-TopsyTurvy.h"
 
 enum { M_FN_LED, M_FN_ANY, M_FN_EQUALS,
        M_PAGEUP, M_FN_PAGEUP, M_FN_A, M_FN_F, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
@@ -26,7 +25,7 @@ KEYMAPS(
    Key_RightBracket,      Key_6, Key_7, Key_8,     Key_9,      Key_0,         LockLayer(NUMPAD),
    Key_RightParen,        Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
                           Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
-   Key_RightCurlyBracket, Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     TOPSY(Minus),
+   Key_RightCurlyBracket, Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     Key_Minus,
    Key_Escape, OSM(RightShift), Key_Spacebar, OSM(RightAlt),
    ShiftToLayer(FUNCTION)),
 
@@ -120,7 +119,6 @@ KALEIDOSCOPE_INIT_PLUGINS(
   OneShot,
   EscapeOneShot,
   Macros,
-  TopsyTurvy,
   ActiveModColorEffect
 );
 
@@ -133,4 +131,3 @@ void setup() {
 void loop() {
   Kaleidoscope.loop();
 }
-
