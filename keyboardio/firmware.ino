@@ -9,26 +9,26 @@
 #include "Kaleidoscope-TopsyTurvy.h"
 
 enum { M_FN_LED, M_FN_ANY, M_FN_EQUALS,
-       M_PAGEUP, M_FN_A, M_FN_F, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
-       M_PAGEDOWN, M_ESCAPE, M_FN_ESCAPE, M_FN_BUTTERFLY, M_BUTTERFLY, M_FN_COMMA, M_FN_PERIOD };
+       M_PAGEUP, M_FN_PAGEUP, M_FN_A, M_FN_F, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
+       M_ESCAPE, M_FN_ESCAPE, M_FN_BUTTERFLY, M_BUTTERFLY, M_FN_COMMA, M_FN_PERIOD };
 enum { QWERTY, NUMPAD, FUNCTION };
 
 KEYMAPS(
 
   [QWERTY] = KEYMAP_STACKED
-  (___,  Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
-   Key_Backtick,  Key_Q, Key_W, Key_E, Key_R, Key_T, M(M_TAB),
-   M(M_PAGEUP),   Key_A, Key_S, Key_D, Key_F, Key_G,
-   Key_LeftGui, Key_Z, Key_X, Key_C, Key_V, Key_B, M(M_ESCAPE),
+  (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
+   Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_LeftParen,
+   M(M_PAGEUP),  Key_A, Key_S, Key_D, Key_F, Key_G,
+   Key_LeftGui,  Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftCurlyBracket,
    OSM(LeftControl), Key_Backspace, OSM(LeftShift), Key_Tab,
-   OSL(FUNCTION),
+   ShiftToLayer(FUNCTION),
 
-   Key_RightBracket, Key_6, Key_7, Key_8,     Key_9,      Key_0,         LockLayer(NUMPAD),
-   M(M_ENTER),       Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
-                     Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
-   M(M_BUTTERFLY),   Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     TOPSY(Minus),
+   Key_RightBracket,      Key_6, Key_7, Key_8,     Key_9,      Key_0,         LockLayer(NUMPAD),
+   Key_RightParen,        Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
+                          Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
+   Key_RightCurlyBracket, Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     TOPSY(Minus),
    Key_Escape, OSM(RightShift), Key_Spacebar, OSM(RightAlt),
-   OSL(FUNCTION)),
+   ShiftToLayer(FUNCTION)),
 
   [NUMPAD] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
@@ -46,10 +46,10 @@ KEYMAPS(
    ___),
 
   [FUNCTION] =  KEYMAP_STACKED
-  (___,                     Key_F1,          Key_F2,     Key_F3, Key_F4,    Key_F5, M(M_FN_LED),
-   ___,                     ___,             ___,        ___,    ___,       ___,    M(M_FN_TAB),
-   M(M_PAGEDOWN),           M(M_FN_A),       ___,        ___,    M(M_FN_F), ___,
-   Consumer_PlaySlashPause, Key_PrintScreen, Key_Insert, ___,    ___,       ___,    M(M_FN_ESCAPE),
+  (___,            Key_F1,          Key_F2,     Key_F3, Key_F4,    Key_F5, M(M_FN_LED),
+   ___,            ___,             ___,        ___,    ___,       ___,    M(M_FN_TAB),
+   M(M_FN_PAGEUP), M(M_FN_A),       ___,        ___,    M(M_FN_F), ___,
+   ___,            Key_PrintScreen, Key_Insert, ___,    ___,       ___,    M(M_FN_ESCAPE),
    ___, Key_Delete, ___, ___,
    ___,
 
@@ -72,7 +72,7 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     case M_ESCAPE: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift));
     case M_BUTTERFLY: return MACRODOWN(D(LeftShift), T(RightBracket), U(LeftShift));
     case M_PAGEUP: return MACRODOWN(D(LeftControl), T(Backspace), U(LeftControl));
-    case M_PAGEDOWN: return MACRODOWN(D(LeftShift), T(Home), T(Backspace), U(LeftShift));
+    case M_FN_PAGEUP: return MACRODOWN(D(LeftShift), T(Home), T(Backspace), U(LeftShift));
     case M_FN_SEMICOLON: return MACRODOWN(D(LeftShift), T(Quote), U(LeftShift), D(LeftShift), T(Quote), U(LeftShift), T(LeftArrow));
     case M_FN_APOSTROPHE: return MACRODOWN(T(Quote), T(Quote), T(LeftArrow));
     case M_FN_EQUALS: return MACRODOWN(T(Equals), T(Equals));
@@ -133,3 +133,4 @@ void setup() {
 void loop() {
   Kaleidoscope.loop();
 }
+
