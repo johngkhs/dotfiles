@@ -15,17 +15,17 @@ enum { QWERTY, NUMPAD, FUNCTION };
 KEYMAPS(
 
   [QWERTY] = KEYMAP_STACKED
-  (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftBracket,
+  (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LeftCurlyBracket,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_LeftParen,
    M(M_PAGEUP),  Key_A, Key_S, Key_D, Key_F, Key_G,
-   Key_LeftGui,  Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftCurlyBracket,
+   Key_LeftGui,  Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftBracket,
    OSM(LeftControl), Key_Backspace, OSM(LeftShift), Key_Tab,
    ShiftToLayer(FUNCTION),
 
-   Key_RightBracket,      Key_6, Key_7, Key_8,     Key_9,      Key_0,         LockLayer(NUMPAD),
+   Key_RightCurlyBracket, Key_6, Key_7, Key_8,     Key_9,      Key_0,         LockLayer(NUMPAD),
    Key_RightParen,        Key_Y, Key_U, Key_I,     Key_O,      Key_P,         Key_Equals,
                           Key_H, Key_J, Key_K,     Key_L,      Key_Semicolon, Key_Quote,
-   Key_RightCurlyBracket, Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     Key_Minus,
+   Key_RightBracket,      Key_N, Key_M, Key_Comma, Key_Period, Key_Slash,     Key_Minus,
    Key_Escape, OSM(RightShift), Key_Spacebar, OSM(RightAlt),
    ShiftToLayer(FUNCTION)),
 
@@ -81,11 +81,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     case M_FN_F: return MACRODOWN(D(LeftControl), T(RightArrow), U(LeftControl));
     case M_FN_TAB: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift), T(LeftArrow));
     case M_FN_ENTER: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift));
-    case M_FN_ESCAPE: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift), T(LeftArrow));
-    case M_FN_BUTTERFLY: return MACRODOWN(T(Escape), T(O), D(LeftShift), T(LeftBracket), U(LeftShift), T(Enter),
-      D(LeftShift), T(RightBracket), U(LeftShift), T(Escape), T(UpArrow), D(LeftShift), T(A), U(LeftShift), T(Enter));
-    case M_FN_LED: return MACRODOWN(T(LeftBracket), T(RightBracket), T(LeftArrow));
-    case M_FN_ANY: return MACRODOWN(T(LeftBracket), T(RightBracket));
+    case M_FN_ESCAPE: return MACRODOWN(T(LeftBracket), T(RightBracket), T(LeftArrow));
+    case M_FN_BUTTERFLY: return MACRODOWN(T(LeftBracket), T(RightBracket));
+    case M_FN_LED: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift), T(LeftArrow));
+    case M_FN_ANY: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift));
   }
   return MACRO_NONE;
 }
