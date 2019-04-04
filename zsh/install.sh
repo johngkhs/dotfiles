@@ -8,7 +8,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 [[ -d /tmp/fasd ]] || git clone https://github.com/clvv/fasd /tmp/fasd
 cp /tmp/fasd/fasd "$HOME/usr/bin"
 [[ -d /tmp/tmux-complete ]] || git clone https://github.com/wellle/tmux-complete.vim /tmp/tmux-complete
-cp /tmp/tmux-complete/sh/tmuxcomplete "$HOME/usr/bin"
+cp /tmp/tmux-complete/sh/tmuxcomplete "$HOME/usr/bin" && chmod +x "$HOME/usr/bin/tmuxcomplete"
 [[ -d /tmp/oh-my-zsh ]] || git clone https://github.com/robbyrussell/oh-my-zsh.git /tmp/oh-my-zsh
 cp -R /tmp/oh-my-zsh/plugins/extract "$HOME/.zsh/plugins/extract"
 
