@@ -7,11 +7,4 @@ xc() {
   xclip -selection c
 }
 
-if whence autocutsel &> /dev/null; then
-  if ! pgrep -x autocutsel &> /dev/null; then
-    autocutsel &> /dev/null &!
-    autocutsel -selection PRIMARY &> /dev/null &!
-  fi
-fi
-
 alias ls='ls --color=auto'

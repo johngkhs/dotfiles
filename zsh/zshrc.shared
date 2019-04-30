@@ -14,9 +14,9 @@ export EDITOR=vim
 ###############################################################################################################
 
 autoload -U colors && colors
-if whence dircolors &> /dev/null; then
+if whence dircolors >/dev/null; then
   eval "$(dircolors $HOME/.zsh/dircolors-solarized/dircolors.256dark)"
-elif whence gdircolors &> /dev/null; then
+elif whence gdircolors >/dev/null; then
   eval "$(gdircolors $HOME/.zsh/dircolors-solarized/dircolors.256dark)"
 fi
 
