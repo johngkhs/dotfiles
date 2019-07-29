@@ -15,6 +15,8 @@ nnoremap <Leader>r :action RenameElement<CR>
 nnoremap <Leader>m :action Refactorings.QuickListPopupAction<CR>
 nnoremap <Leader>, :action CommentByLineComment<CR>
 vnoremap <Leader>, :action CommentByLineComment<CR>
+nnoremap <CR> gd
+nnoremap <Leader>s :action FindUsages<CR>
 
 map J 20j
 map K 20k
