@@ -9,14 +9,15 @@ set timeout timeoutlen=1000 ttimeoutlen=100
 inoremap jk <Esc>
 cnoremap jk <C-c>
 
+nnoremap <CR> gd
+nnoremap <Leader>s :action FindUsages<CR>
 nnoremap <Leader>h :action PreviousTab<CR>
 nnoremap <Leader>l :action NextTab<CR>
 nnoremap <Leader>r :action RenameElement<CR>
 nnoremap <Leader>m :action Refactorings.QuickListPopupAction<CR>
 nnoremap <Leader>, :action CommentByLineComment<CR>
 vnoremap <Leader>, :action CommentByLineComment<CR>
-nnoremap <CR> gd
-nnoremap <Leader>s :action FindUsages<CR>
+vnoremap v :action EditorSelectWord<CR>
 
 map J 20j
 map K 20k
