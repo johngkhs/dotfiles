@@ -50,5 +50,6 @@ bind -n C-p previous-window
 bind -n C-n next-window
 
 bind-key f send-keys -l "\"$(f.)\"" \; send-keys Tab
+bind-key t send-keys -l "\"$(t.)\"" \; send-keys Tab
 bind-key y capture-pane \; save-buffer /tmp/pane.txt \; splitw -v -p 90 'vim + /tmp/pane.txt'
 bind-key -T copy-mode-vi v send -X begin-selection

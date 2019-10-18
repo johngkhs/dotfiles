@@ -222,8 +222,12 @@ br() {
   branch="$(_fzf_branch)" && git checkout "$branch"
 }
 
+t.() {
+  tmuxcomplete | sort -u | fzf-tmux -d 90% +m
+}
+
 f.() {
-  (tmuxcomplete | sort -u; fasd -l; find_subfiles) | fzf-tmux -d 90% +m
+  (find_subfiles; fasd -l) | fzf-tmux -d 90% +m
 }
 
 ###############################################################################################################
