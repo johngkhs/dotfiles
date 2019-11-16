@@ -1,0 +1,43 @@
+let mapleader = " "
+
+set clipboard=unnamedplus
+set ignorecase
+set smartcase
+set nohlsearch incsearch
+set timeout timeoutlen=1000 ttimeoutlen=100
+
+inoremap jk <Esc>
+cnoremap jk <C-c>
+
+nnoremap <CR> gd
+nnoremap <Leader>s :action FindUsages<CR>
+nnoremap <Leader>h :action PreviousTab<CR>
+nnoremap <Leader>l :action NextTab<CR>
+nnoremap <Leader>r :action RenameElement<CR>
+nnoremap <Leader>m :action Refactorings.QuickListPopupAction<CR>
+nnoremap <Leader>, :action CommentByLineComment<CR>
+vnoremap <Leader>, :action CommentByLineComment<CR>
+vnoremap v :action EditorSelectWord<CR>
+
+map J 20j
+map K 20k
+
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+
+nnoremap <Leader>J mzJ`z
+
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-k> <C-w>k
+nnoremap <C-j> <C-w>j
+
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
+nnoremap <Tab> >>
+nnoremap <S-Tab> <<
+
+nnoremap H <C-O>
+nnoremap L <C-I>
+
+nnoremap Y y$

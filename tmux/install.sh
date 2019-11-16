@@ -2,7 +2,7 @@
 set -o errexit -o nounset -o xtrace
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-cp -n "$script_dir/tmux.conf.shared" "$HOME/.tmux.conf"
+cp "$script_dir/tmux.conf.shared" "$HOME/.tmux.conf"
 
 platform="$(uname)"
 if [[ "$platform" == *Darwin* ]]; then

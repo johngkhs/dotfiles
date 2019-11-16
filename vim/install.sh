@@ -2,6 +2,6 @@
 set -o errexit -o nounset -o xtrace
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-git clone https://github.com/VundleVim/Vundle.vim "$HOME/.vim/bundle/Vundle.vim"
-cp -R -n "$script_dir/UltiSnips" "$HOME/.vim"
-cp -n "$script_dir/vimrc" "$HOME/.vimrc"
+[[ -d "$HOME/.vim/bundle/Vundle.vim" ]] || git clone https://github.com/VundleVim/Vundle.vim "$HOME/.vim/bundle/Vundle.vim"
+cp "$script_dir/vimrc" "$HOME/.vimrc"
+cp "$script_dir/ideavimrc" "$HOME/.ideavimrc"

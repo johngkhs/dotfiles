@@ -65,6 +65,7 @@ done
 ###############################################################################################################
 
 bindkey -v
+bindkey -M viins '\e' magic-space
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey "^?" backward-delete-char
 
@@ -103,6 +104,7 @@ bindkey -M vicmd 'k' history-substring-search-up
 
 source "$HOME/.zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 FAST_HIGHLIGHT_STYLES[path]='fg=white,bold'
+FAST_HIGHLIGHT_STYLES[path-to-dir]='fg=white,bold'
 
 ###############################################################################################################
 #                                              extract                                                        #
@@ -114,7 +116,7 @@ source "$HOME/.zsh/plugins/extract/extract.plugin.zsh"
 #                                               fzf                                                           #
 ###############################################################################################################
 
-export FZF_DEFAULT_COMMAND='ag -U -g ""'
+export FZF_DEFAULT_COMMAND='rg --files'
 export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
 
 ###############################################################################################################
@@ -135,7 +137,7 @@ find_subdirs() {
 }
 
 find_subfiles() {
-  ag --silent -g ''
+  rg --files
 }
 
 locate_ignorecase() {
@@ -162,7 +164,7 @@ d() {
   local dir
   if [ $# -eq 0 ]
   then
-        dir="$(fasd -l -d | sed s@$(pwd)\/@@ | single_select_fzf)" && fasd_cd "$dir"
+        dir=$(fasd -l -d | sed "s@$(pwd)\/@@" | single_select_fzf) && fasd_cd "$dir"
   else
         fasd_cd "$@"
   fi
@@ -220,8 +222,12 @@ br() {
   branch="$(_fzf_branch)" && git checkout "$branch"
 }
 
-k.() {
-  (tmuxcomplete | sort -u; fasd -l; find_subfiles) | fzf-tmux -d 90% +m
+t.() {
+  tmuxcomplete | sort -u | fzf-tmux -d 90% +m
+}
+
+f.() {
+  (find_subfiles; fasd -l) | fzf-tmux -d 90% +m
 }
 
 ###############################################################################################################
@@ -230,3 +236,5 @@ k.() {
 
 alias g='git'
 alias x='extract'
+alias b='bat'
+alias fd='find_subfiles | rg'

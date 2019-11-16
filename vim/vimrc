@@ -12,11 +12,8 @@ filetype off
 set rtp+=$HOME/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'Yggdroot/indentLine.git'
-Plugin 'airblade/vim-gitgutter'
 Plugin 'alvan/vim-closetag'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'derekwyatt/vim-fswitch'
 Plugin 'gioele/vim-autoswap'
 Plugin 'gmarik/Vundle.vim'
 Plugin 'haya14busa/incsearch.vim'
@@ -27,16 +24,13 @@ Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'justinmk/vim-sneak'
 Plugin 'lyuts/vim-rtags'
-Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'PeterRincker/vim-argumentative'
-Plugin 'SirVer/ultisnips'
 Plugin 'stefandtw/quickfix-reflector.vim'
 Plugin 'tomasr/molokai'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-repeat'
 Plugin 'Valloric/MatchTagAlways'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'vim-airline/vim-airline'
 Plugin 'yssl/QFEnter'
 
 
@@ -46,6 +40,8 @@ filetype plugin indent on
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                          general settings                                                   "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let mapleader = "\<Space>"
 
 runtime macros/matchit.vim
 syntax on
@@ -78,13 +74,12 @@ hi NonText ctermbg=none
 set tags=./tags;
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                           silversearcher                                                   "
+"                                             ripgrep                                                         "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-set grepprg=ag\ --nogroup\ --nocolor
-nnoremap <Leader>s :silent execute "grep! -U --cpp " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
-command! -nargs=+ Grepcpp :silent execute "grep! -U --cpp " shellescape(<q-args>) " ." | :copen
-command! -nargs=+ Greppy :silent execute "grep! -U --py " shellescape(<q-args>) " ." | :copen
+set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+nnoremap <Leader>s :silent execute "grep! " . shellescape(expand("<cword>")) . " ."<CR>:copen<CR>
+command! -nargs=+ RgText :silent execute "grep! " shellescape(<q-args>) " ." | :copen
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            youcompleteme                                                    "
@@ -172,13 +167,6 @@ map / <Plug>(incsearch-forward)
 map ? <Plug>(incsearch-backward)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                            indentline                                                       "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:indentLine_color_term = 245
-let g:indentLine_char = '│'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                              rtags                                                          "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -218,21 +206,6 @@ vnoremap <Leader>, :Commentary<CR>
 let g:autoswap_detect_tmux = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                             airline                                                         "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:airline_powerline_fonts = 1
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                            ultisnips                                                        "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:ycm_use_ultisnips_completer = 1
-let g:UltiSnipsExpandTrigger="<C-l>"
-let g:UltiSnipsJumpForwardTrigger="<C-l>"
-let g:UltiSnipsJumpBackwardTrigger="<C-h>"
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                            clipboard                                                        "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -244,14 +217,12 @@ nnoremap <Leader>p o<Space><Backspace><Esc>:set paste<CR>p:set nopaste<CR>
 "                                         general mappings                                                    "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let mapleader = "\<Space>"
-
 inoremap jk <Esc>
 cnoremap jk <C-c>
 inoremap jj ()<Esc>i
 inoremap kk ()
 inoremap jl <Esc>A<Space>{<CR>}<Esc><Up>A<CR>
-map <Leader>t :Grepcpp 
+map <Leader>t :RgText 
 
 map J 20j
 map K 20k
@@ -293,17 +264,6 @@ nnoremap Y y$
 augroup save_clipboard_contents_on_exit
     autocmd!
     autocmd VimLeave * call system("xclip -in -selection clipboard", getreg('+'))
-augroup END
-
-augroup strip_trailing_whitespace_on_save
-    autocmd!
-    autocmd FileType cpp autocmd BufWritePre <buffer> StripWhitespace
-augroup END
-
-augroup cpp_header_file_switching
-  autocmd!
-  autocmd BufEnter *.cc let b:fswitchdst = 'h'
-  autocmd BufEnter *.h let b:fswitchdst = 'cc'
 augroup END
 
 augroup fullscreen_quickfix
