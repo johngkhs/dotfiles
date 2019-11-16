@@ -8,6 +8,10 @@
                 [
                     {
                         "function": "powerline.segments.common.env.user",
+                        "priority": 40
+                    },
+                    {
+                        "function": "powerline.segments.common.env.virtualenv",
                         "priority": 30
                     },
                     {
