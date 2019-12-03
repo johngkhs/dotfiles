@@ -10,7 +10,9 @@ inoremap jk <Esc>
 cnoremap jk <C-c>
 
 nnoremap <CR> gd
-nnoremap <Leader>s :action FindUsages<CR>
+nnoremap <Leader><CR> :action FindUsages<CR>
+nnoremap <Leader>f :action GotoFile<CR>
+nnoremap <Leader>; :action ReformatCode<CR>
 nnoremap <Leader>h :action PreviousTab<CR>
 nnoremap <Leader>l :action NextTab<CR>
 nnoremap <Leader>r :action RenameElement<CR>
