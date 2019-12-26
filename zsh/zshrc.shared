@@ -117,18 +117,18 @@ source "$HOME/.zsh/plugins/extract/extract.plugin.zsh"
 ###############################################################################################################
 
 export FZF_DEFAULT_COMMAND='rg --files'
-export FZF_DEFAULT_OPTS="--reverse --bind=tab:down,btab:up"
+export FZF_DEFAULT_OPTS="--reverse"
 
 ###############################################################################################################
 #                                             functions                                                       #
 ###############################################################################################################
 
 k() {
-  local pid
-  pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
-  if [[ "$pid" ]]
+  local pids
+  pids=$(ps -ef | sed 1d | multi_select_fzf | awk '{print $2}')
+  if [[ "$pids" ]]
   then
-    kill -${1:-15} "$pid"
+    echo "$pids" | xargs kill -${1:-15}
   fi
 }
 
@@ -150,6 +150,10 @@ fasd_cd() {
 
 fasd_vim() {
   fasd -A "$@" && vim "$@"
+}
+
+multi_select_fzf() {
+  fzf -m
 }
 
 single_select_fzf() {
