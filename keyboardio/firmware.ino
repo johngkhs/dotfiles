@@ -8,7 +8,7 @@
 #include "Kaleidoscope-Escape-OneShot.h"
 
 enum { M_FN_LED, M_FN_ANY, M_FN_EQUALS,
-       M_PAGEUP, M_FN_PAGEUP, M_FN_S, M_FN_F, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
+       M_PAGEUP, M_FN_PAGEUP, M_FN_W, M_FN_B, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
        M_ESCAPE, M_FN_ESCAPE, M_FN_BUTTERFLY, M_BUTTERFLY, M_FN_COMMA, M_FN_PERIOD };
 enum { QWERTY, NUMPAD, FUNCTION };
 
@@ -45,10 +45,10 @@ KEYMAPS(
    ___),
 
   [FUNCTION] =  KEYMAP_STACKED
-  (___,            Key_F1,          Key_F2,     Key_F3, Key_F4,    Key_F5, M(M_FN_LED),
-   ___,            ___,             ___,        ___,    ___,       ___,    M(M_FN_TAB),
-   M(M_FN_PAGEUP), ___,             M(M_FN_S),  ___,    M(M_FN_F), ___,
-   ___,            Key_PrintScreen, Key_Insert, ___,    ___,       ___,    M(M_FN_ESCAPE),
+  (___,            Key_F1,          Key_F2,     Key_F3, Key_F4, Key_F5,    M(M_FN_LED),
+   ___,            ___,             M(M_FN_W),  ___,    ___,    ___,       M(M_FN_TAB),
+   M(M_FN_PAGEUP), ___,             ___,        ___,    ___,    ___,
+   ___,            Key_PrintScreen, Key_Insert, ___,    ___,    M(M_FN_B), M(M_FN_ESCAPE),
    ___, Key_Delete, ___, ___,
    ___,
 
@@ -77,8 +77,8 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
     case M_FN_EQUALS: return MACRODOWN(T(Equals), T(Equals));
     case M_FN_COMMA: return MACRODOWN(D(LeftShift), T(Comma), U(LeftShift), D(LeftShift), T(Period), U(LeftShift), T(LeftArrow));
     case M_FN_PERIOD: return MACRODOWN(T(Minus), D(LeftShift), T(Period), U(LeftShift));
-    case M_FN_S: return MACRODOWN(D(LeftControl), T(LeftArrow), U(LeftControl));
-    case M_FN_F: return MACRODOWN(D(LeftControl), T(RightArrow), U(LeftControl));
+    case M_FN_B: return MACRODOWN(D(LeftControl), T(LeftArrow), U(LeftControl));
+    case M_FN_W: return MACRODOWN(D(LeftControl), T(RightArrow), U(LeftControl));
     case M_FN_TAB: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift), T(LeftArrow));
     case M_FN_ENTER: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift));
     case M_FN_ESCAPE: return MACRODOWN(T(LeftBracket), T(RightBracket), T(LeftArrow));

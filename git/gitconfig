@@ -14,6 +14,7 @@
     ci = commit -a -m
     co = checkout
     co- = checkout -- .
+    pl = pull
     re = reset
     re- = reset -- .
     a = add -A
