@@ -21,6 +21,8 @@ nnoremap <Leader>, :action CommentByLineComment<CR>
 vnoremap <Leader>, :action CommentByLineComment<CR>
 vnoremap v :action EditorSelectWord<CR>
 
+nnoremap <Leader><Leader>r :action Run<CR>
+
 map J 20j
 map K 20k
 
