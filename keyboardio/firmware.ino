@@ -6,6 +6,7 @@
 #include "Kaleidoscope-OneShot.h"
 #include "Kaleidoscope-LED-ActiveModColor.h"
 #include "Kaleidoscope-Escape-OneShot.h"
+#include "Kaleidoscope-Qukeys.h"
 
 enum { M_FN_LED, M_FN_ANY, M_FN_EQUALS,
        M_PAGEUP, M_FN_PAGEUP, M_FN_W, M_FN_B, M_TAB, M_FN_TAB, M_FN_ENTER, M_ENTER, M_FN_SEMICOLON, M_FN_APOSTROPHE,
@@ -19,7 +20,7 @@ KEYMAPS(
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_LeftParen,
    M(M_PAGEUP),  Key_A, Key_S, Key_D, Key_F, Key_G,
    Key_LeftGui,  Key_Z, Key_X, Key_C, Key_V, Key_B, Key_LeftBracket,
-   OSM(LeftControl), Key_Backspace, OSM(LeftShift), Key_Tab,
+   OSM(LeftControl), Key_Backspace, OSM(LeftShift), GUI_T(Tab),
    ShiftToLayer(FUNCTION),
 
    Key_RightCurlyBracket, Key_6, Key_7, Key_8,     Key_9,      Key_0,         LockLayer(NUMPAD),
@@ -117,6 +118,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   NumPad,
   OneShot,
   EscapeOneShot,
+  Qukeys,
   Macros,
   ActiveModColorEffect
 );
