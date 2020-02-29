@@ -12,6 +12,8 @@ cnoremap jk <C-c>
 nnoremap <CR> gd
 nnoremap <Leader>s :action FindUsages<CR>
 nnoremap <Leader>f :action GotoFile<CR>
+nnoremap <Leader>g :action SearchEverywhere<CR>
+nnoremap <Leader>i :action ImplementMethods<CR>
 nnoremap <Leader>; :action ReformatCode<CR>
 nnoremap <Leader>h :action PreviousTab<CR>
 nnoremap <Leader>l :action NextTab<CR>
@@ -26,7 +28,7 @@ nnoremap <Leader><Leader>r :action Run<CR>
 map J 20j
 map K 20k
 
-nnoremap <Leader>w :w<CR>
+nnoremap <Leader>w :action com.dubreuia.core.action.ShortcutAction<CR>:action SaveDocument<CR>
 nnoremap <Leader>q :q<CR>
 
 nnoremap <Leader>J mzJ`z
