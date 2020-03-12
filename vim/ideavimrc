@@ -14,7 +14,8 @@ nnoremap <Leader>s :action FindUsages<CR>
 nnoremap <Leader>f :action GotoFile<CR>
 nnoremap <Leader><Leader>f :action RecentFiles<CR>
 nnoremap <Leader>g :action SearchEverywhere<CR>
-nnoremap <Leader>i :action ImplementMethods<CR>
+nnoremap <Leader><Leader>i :action ImplementMethods<CR>
+nnoremap <Leader>i :action GotoImplementation<CR>
 nnoremap <Leader>; :action ReformatCode<CR>
 nnoremap <Leader>h :action PreviousTab<CR>
 nnoremap <Leader>l :action NextTab<CR>
