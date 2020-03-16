@@ -15,6 +15,7 @@
     co = checkout
     co- = checkout -- .
     pl = pull
+    pu = push
     re = reset
     re- = reset -- .
     a = add -A
@@ -24,3 +25,5 @@
     st = stash
     t = log --tags --decorate --simplify-by-decoration --oneline
     ct = "!create_tag() { set -e; git tag -a $1 -m \"Tagging $1\"; git push origin $1; }; create_tag"
+[advice]
+	pushNonFastForward = false
