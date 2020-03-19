@@ -49,7 +49,7 @@ colorscheme molokai
 set background=dark
 set completeopt=longest,menuone
 set autoindent
-set tabstop=4 shiftwidth=4 expandtab
+set tabstop=2 shiftwidth=2 expandtab
 set showmatch
 set enc=utf-8 fenc=utf8 termencoding=utf-8
 set t_Co=256
