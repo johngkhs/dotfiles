@@ -4,7 +4,7 @@
 [push]
     default = simple
 [alias]
-    l = log --graph --abbrev-commit --decorate --color --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(bold cyan)[%an]%C(reset) %C(white)%s%C(reset) %C(bold yellow)%d%C(reset)'
+    l = log --date=local --graph --abbrev-commit --decorate --color --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(bold cyan)[%an]%C(reset) %C(white)%s%C(reset) %C(bold yellow)%d%C(reset)'
     f = fetch
     b = branch -vv --sort=committerdate
     ba = branch -avv --sort=committerdate
