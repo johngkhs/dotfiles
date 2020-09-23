@@ -203,7 +203,7 @@ v.() {
 
 _fzf_branch() {
   local branches branch
-  branches=$(git branch | grep -v HEAD) &&
+  branches=$(git branch --sort=-committerdate | grep -v HEAD) &&
   branch=$(echo "$branches" | fzf -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
   echo "$branch" | sed "s/.* //" | sed "s@remotes/[^/]*/@@"
 }
