@@ -74,7 +74,7 @@ bindkey "^?" backward-delete-char
 ###############################################################################################################
 
 source "$HOME/.config/powerline/source_powerline.zsh"
-pgrep -x powerline-daemon >/dev/null && powerline-daemon -q
+pgrep -x powerline-daemon >/dev/null || powerline-daemon -q
 
 ###############################################################################################################
 #                                             tab completion                                                  #
