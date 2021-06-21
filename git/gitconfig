@@ -1,6 +1,6 @@
 [core]
     editor = vim
-	pager = diff-so-fancy | less --tabs=4 -RFX
+	  pager = diff-so-fancy | less --tabs=4 -RFX
 [push]
     default = simple
 [alias]
@@ -25,5 +25,5 @@
     st = stash
     t = log --tags --decorate --simplify-by-decoration --oneline
     ct = "!create_tag() { set -e; git tag -a $1 -m \"Tagging $1\"; git push origin $1; }; create_tag"
-[advice]
-	pushNonFastForward = false
+[pull]
+	  ff = only
