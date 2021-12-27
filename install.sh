@@ -11,11 +11,9 @@ select user_input in "Yes" "No"; do
 done
 
 mkdir -p $HOME/usr/{bin,lib,include}
-mkdir -p $HOME/usr/lib/python
 
 cd "$script_dir/git" && ./install.sh
 cd "$script_dir/tmux" && ./install.sh
-cd "$script_dir/powerline" && ./install.sh
 cd "$script_dir/zsh" && ./install.sh
 cd "$script_dir/vim" && ./install.sh
 echo "Dotfile installation complete."

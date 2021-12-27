@@ -6,7 +6,6 @@ setopt interactive_comments
 
 export PATH="$HOME/usr/bin:$PATH"
 export LD_LIBRARY_PATH="$HOME/usr/lib:$LD_LIBRARY_PATH"
-export PYTHONPATH="$HOME/usr/lib/python:$PYTHONPATH"
 export EDITOR=vim
 
 ###############################################################################################################
@@ -70,11 +69,16 @@ bindkey -M viins 'jk' vi-cmd-mode
 bindkey "^?" backward-delete-char
 
 ###############################################################################################################
-#                                            powerline prompt                                                 #
+#                                            powerlevel10k prompt                                             #
 ###############################################################################################################
 
-source "$HOME/.config/powerline/source_powerline.zsh"
-pgrep -x powerline-daemon >/dev/null || powerline-daemon -q
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 ###############################################################################################################
 #                                             tab completion                                                  #
