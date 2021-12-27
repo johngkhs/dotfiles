@@ -20,4 +20,4 @@ cd "$script_dir/tmux" && ./install.sh
 cd "$script_dir/zsh" && ./install.sh
 cd "$script_dir/vim" && ./install.sh
 echo "Dotfile installation complete."
-echo "You must install bat, fzf, tmux, rg, vim, and zsh."
+echo "You will also need to install bat, fzf, tmux, rg, vim, zsh, and a powerline font."
