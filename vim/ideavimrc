@@ -6,6 +6,8 @@ set smartcase
 set nohlsearch incsearch
 set timeout timeoutlen=1000 ttimeoutlen=100
 
+set sneak
+
 inoremap jk <Esc>
 cnoremap jk <C-c>
 
