@@ -50,7 +50,7 @@ vnoremap <S-Tab> <gv
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
 
-nnoremap H :action Back<CR>
-nnoremap L :action Forward<CR>
+nmap H <Action>(Back)
+nmap L <Action>(Forward)
 
 nnoremap Y y$
