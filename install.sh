@@ -21,3 +21,8 @@ cd "$script_dir/zsh" && ./install.sh
 cd "$script_dir/vim" && ./install.sh
 echo "Dotfile installation complete."
 echo "You will also need to install bat, fzf, tmux, rg, vim, zsh, and a powerline font."
+
+platform="$(uname)"
+if [[ "$platform" == *Darwin* ]]; then
+  echo "You must manually install Spaceman, BetterTouchTool, and yabai to replicate TotalSpaces2."
+fi
