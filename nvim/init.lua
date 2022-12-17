@@ -186,6 +186,8 @@ map('n', '<leader><leader>s', '<cmd>FzfLua lsp_references<cr>')
 --                                          lspconfig and nvim-cmp                                            --
 ----------------------------------------------------------------------------------------------------------------
 
+vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
+
 require('cmp_nvim_lsp_signature_help')
 
 local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -200,30 +202,18 @@ end
 local cmp = require('cmp')
 cmp.setup {
   mapping = cmp.mapping.preset.insert({
-    ['<cr>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
+    ['<cr>'] = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = true, },
     ['<c-space>'] = cmp.mapping.complete(),
     ['<tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      else
-        fallback()
-      end
+      if cmp.visible() then cmp.select_next_item() else fallback() end
     end, { 'i', 's' }),
     ['<s-tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      else
-        fallback()
-      end
+      if cmp.visible() then cmp.select_prev_item() else fallback() end
     end, { 'i', 's' }),
   }),
   sources = {
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
-  }, {
     { name = 'buffer' },
   },
 }
