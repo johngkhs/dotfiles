@@ -24,6 +24,9 @@ local PACKAGES = {
   'weilbith/nvim-code-action-menu',
   'hrsh7th/cmp-nvim-lsp-signature-help',
   'nvim-treesitter/nvim-treesitter',
+  'elihunter173/dirbuf.nvim',
+  'mfussenegger/nvim-dap',
+  'rcarriga/nvim-dap-ui',
 }
 
 local function bootstrap_paq()
@@ -247,3 +250,54 @@ require('flit').setup {}
 ----------------------------------------------------------------------------------------------------------------
 
 map('n', '<leader>h', ':Ouroboros<cr>', {silent = true})
+
+----------------------------------------------------------------------------------------------------------------
+--                                           dirbuf.nvim                                                      --
+----------------------------------------------------------------------------------------------------------------
+
+require('dirbuf').setup {}
+map('n', '<leader>-', '<cmd>DirbufQuit<cr>')
+
+----------------------------------------------------------------------------------------------------------------
+--                                             nvim-dap                                                       --
+----------------------------------------------------------------------------------------------------------------
+
+local dap = require('dap')
+dap.adapters.lldb = {
+	type = "executable",
+  command = '/Users/jkaczor/llvm/bin/lldb-vscode',
+	name = "lldb",
+}
+
+dap.configurations.cpp = {
+  {
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
+    program = vim.fn.getcwd() .. '/a.out',
+    cwd = "${workspaceFolder}",
+    stopOnEntry = true,
+    args = {},
+    runInTerminal = true,
+  }
+}
+
+require("dapui").setup {
+ layouts = {
+    {
+      elements = { "scopes" },
+      size = 0.35,
+      position = "left",
+    },
+    {
+      elements = { "repl" },
+      size = 0.15,
+      position = "bottom",
+    },
+  },
+}
+
+map('n', '<leader>l', '<cmd>DapContinue<cr>')
+map('n', '<leader><leader>t', '<cmd>DapTerminate<cr>')
+map('n', '<leader><leader>b', '<cmd>DapToggleBreakpoint<cr>')
+map('n', '<leader><leader>i', '<cmd>lua require("dapui").toggle()<cr>')
