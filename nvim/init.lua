@@ -181,6 +181,7 @@ cmp.setup {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
+    ['<c-space>'] = cmp.mapping.complete(),
     ['<tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -201,6 +202,7 @@ cmp.setup {
   },
 }
 
+map('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<cr>')
 
 ----------------------------------------------------------------------------------------------------------------
 --                                            nvim-comment                                                    --
