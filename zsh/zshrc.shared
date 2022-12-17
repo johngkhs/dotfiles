@@ -6,7 +6,7 @@ setopt interactive_comments
 
 export PATH="$HOME/usr/bin:$PATH"
 export LD_LIBRARY_PATH="$HOME/usr/lib:$LD_LIBRARY_PATH"
-export EDITOR=vim
+export EDITOR=nvim
 
 ###############################################################################################################
 #                                           general settings                                                  #
@@ -152,8 +152,8 @@ fasd_cd() {
   fasd -A "$@" && cd "$@"
 }
 
-fasd_vim() {
-  fasd -A "$@" && vim "$@"
+fasd_nvim() {
+  fasd -A "$@" && nvim "$@"
 }
 
 multi_select_fzf() {
@@ -189,20 +189,20 @@ v() {
   local file
   if [ $# -eq 0 ]
   then
-        file="$(fasd -l -f | single_select_fzf)" && fasd_vim "$file"
+        file="$(fasd -l -f | single_select_fzf)" && fasd_nvim "$file"
   else
-        fasd_vim "$@"
+        fasd_nvim "$@"
   fi
 }
 
 v/() {
   local file
-  file="$(locate_ignorecase $@ | single_select_fzf)" && fasd_vim "$file"
+  file="$(locate_ignorecase $@ | single_select_fzf)" && fasd_nvim "$file"
 }
 
 v.() {
   local file
-  file="$(find_subfiles | single_select_fzf)" && fasd_vim "$file"
+  file="$(find_subfiles | single_select_fzf)" && fasd_nvim "$file"
 }
 
 _fzf_branch() {
