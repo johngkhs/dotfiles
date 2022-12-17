@@ -1,5 +1,4 @@
-----------------------------------------------------------------------------------------------------------------
---                                                paq                                                         --
+----------------------------------------------------------------------------------------------------------------                                                paq                                                         --
 ----------------------------------------------------------------------------------------------------------------
 
 local PACKAGES = {
@@ -21,6 +20,7 @@ local PACKAGES = {
   'filipdutescu/renamer.nvim',
   'RRethy/vim-illuminate',
   'lewis6991/gitsigns.nvim',
+  'jakemason/ouroboros.nvim',
 }
 
 local paq = require('paq')
@@ -28,7 +28,7 @@ local paq = require('paq')
 local function bootstrap_paq()
     local path = vim.fn.stdpath 'data' .. '/site/pack/paqs/start/paq-nvim'
     if vim.fn.empty(vim.fn.glob(path)) > 0 then
-        vim.fn.system { 'git', 'clone', '--depth=1', 'https://github.com/savq/paq-nvim.git', path, }
+        vim.fn.system { 'git', 'clone', '--depth=1', 'https://github.com/savq/paq-nvim.git', path }
         vim.cmd('packadd paq-nvim')
         paq(PACKAGES).install()
     end
@@ -55,7 +55,7 @@ vim.g.mapleader = ' '
 vim.api.nvim_set_option('clipboard', 'unnamedplus')
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.cmd('set nohlsearch')
+vim.opt.hlsearch = false
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
@@ -63,137 +63,9 @@ vim.opt.expandtab = true
 vim.opt.wildignore = '*.o,*.a,*/bin/*'
 vim.opt.grepprg = 'rg --vimgrep --no-heading --smart-case --column --line-number'
 
-require('onedark').setup {
-  transparent = true
-}
-require('onedark').load()
-
-
-----------------------------------------------------------------------------------------------------------------
---                                             hardline                                                       --
-----------------------------------------------------------------------------------------------------------------
-
-require('hardline').setup {}
-
-require('renamer').setup {}
-
-require('illuminate').configure {
-  delay = 0 
-}
-
-require('gitsigns').setup()
-
-map('n', '<leader><leader>r', '<cmd>lua require("renamer").rename()<cr>', {silent = true})
-map('v', '<leader><leader>r', '<cmd>lua require("renamer").rename()<cr>', {silent = true})
-
--- require('nvim-web-devicons').setup {}
--- require('trouble').setup {
---   height = 40,
---   action_keys = {
---     jump = '<tab>',
---     jump_close = '<cr>',
---     hover = {},
---   },
--- }
---
--- map('n', '<leader>a', '<cmd>TroubleToggle quickfix<cr>')
--- map('n', '<leader>e', '<cmd>TroubleToggle document_diagnostics<cr>')
--- map('n', 'gr', '<cmd>Trouble lsp_references<cr>')
-----------------------------------------------------------------------------------------------------------------
---                                        nvim-tmux-navigation                                                --
-----------------------------------------------------------------------------------------------------------------
-
-require('nvim-tmux-navigation')
-
-map('n', '<c-h>', '<cmd>NvimTmuxNavigateLeft<cr>', {silent = true})
-map('n', '<c-j>', '<cmd>NvimTmuxNavigateDown<cr>', {silent = true})
-map('n', '<c-k>', '<cmd>NvimTmuxNavigateUp<cr>', {silent = true})
-map('n', '<c-l>', '<cmd>NvimTmuxNavigateRight<cr>', {silent = true})
-
-----------------------------------------------------------------------------------------------------------------
---                                              fzf-lua                                                       --
-----------------------------------------------------------------------------------------------------------------
-
-require('fzf-lua').setup {
-  winopts = {
-    fullscreen = true,
-    preview = {
-      layout = 'vertical',
-      vertical = 'up:45%',
-    }
-  }
-}
-
-map('n', '<enter>', '<cmd>lua vim.lsp.buf.definition()<cr>')
-map('n', '<leader>f', '<cmd>FzfLua files<cr>')
-map('n', '<leader>b', '<cmd>FzfLua buffers<cr>')
-map('n', '<leader>s', '<cmd>FzfLua grep_cword<cr>' )
-map('n', '<leader>t', '<cmd>FzfLua grep<cr>' )
-map('n', 'gr', '<cmd>FzfLua lsp_references<cr>')
--- map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>')
--- map('n', 'gR', '<cmd>lua vim.lsp.buf.references()<cr>')
-
-----------------------------------------------------------------------------------------------------------------
---                                          lspconfig and nvim-cmp                                            --
-----------------------------------------------------------------------------------------------------------------
-
-local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-local servers = { 'pyright', 'clangd' }
-local lspconfig = require('lspconfig')
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    capabilities = capabilities,
-  }
-end
-
-local cmp = require('cmp')
-cmp.setup {
-  mapping = cmp.mapping.preset.insert({
-    ['<cr>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-  }),
-  sources = {
-    { name = 'nvim_lsp' },
-  },
-}
-
-
-----------------------------------------------------------------------------------------------------------------
---                                            nvim-comment                                                    --
-----------------------------------------------------------------------------------------------------------------
-
-require('nvim_comment').setup({create_mappings = false})
-map('n', '<leader>,', ':CommentToggle<cr>')
-map('v', '<leader>,', ':\'<,\'>CommentToggle<cr>')
-
-----------------------------------------------------------------------------------------------------------------
---                                           flit and leap                                                    --
-----------------------------------------------------------------------------------------------------------------
-
-require('leap').add_default_mappings()
-require('flit').setup {}
-
-----------------------------------------------------------------------------------------------------------------
---                                            vim-fswitch                                                     --
-----------------------------------------------------------------------------------------------------------------
-
-map('n', '<leader>h', '<cmd>FSHere<cr>')
+local onedark = require('onedark')
+onedark.setup { transparent = true }
+onedark.load()
 
 ----------------------------------------------------------------------------------------------------------------
 --                                          general mappings                                                  --
@@ -233,3 +105,120 @@ map('n', '<leader>j', 'mzJ`z')
 
 map('n', '<leader>E', ':vsplit $MYVIMRC<cr>')
 map('n', '<leader>S', ':source $MYVIMRC<cr>')
+
+----------------------------------------------------------------------------------------------------------------
+--                                        nvim-tmux-navigation                                                --
+----------------------------------------------------------------------------------------------------------------
+
+require('nvim-tmux-navigation')
+
+map('n', '<c-h>', '<cmd>NvimTmuxNavigateLeft<cr>', {silent = true})
+map('n', '<c-j>', '<cmd>NvimTmuxNavigateDown<cr>', {silent = true})
+map('n', '<c-k>', '<cmd>NvimTmuxNavigateUp<cr>', {silent = true})
+map('n', '<c-l>', '<cmd>NvimTmuxNavigateRight<cr>', {silent = true})
+
+----------------------------------------------------------------------------------------------------------------
+--                                             hardline                                                       --
+----------------------------------------------------------------------------------------------------------------
+
+require('hardline').setup {}
+
+----------------------------------------------------------------------------------------------------------------
+--                                             renamer                                                        --
+----------------------------------------------------------------------------------------------------------------
+
+require('renamer').setup {}
+map('n', '<leader><leader>r', '<cmd>lua require("renamer").rename()<cr>', {silent = true})
+map('v', '<leader><leader>r', '<cmd>lua require("renamer").rename()<cr>', {silent = true})
+
+----------------------------------------------------------------------------------------------------------------
+--                                            illuminate                                                      --
+----------------------------------------------------------------------------------------------------------------
+
+require('illuminate').configure { delay = 0 }
+
+----------------------------------------------------------------------------------------------------------------
+--                                             gitsigns                                                       --
+----------------------------------------------------------------------------------------------------------------
+
+require('gitsigns').setup {}
+
+----------------------------------------------------------------------------------------------------------------
+--                                              fzf-lua                                                       --
+----------------------------------------------------------------------------------------------------------------
+
+require('fzf-lua').setup {
+  winopts = {
+    fullscreen = true,
+    preview = { layout = 'vertical', vertical = 'up:45%' }
+  }
+}
+
+map('n', '<enter>', '<cmd>lua vim.lsp.buf.definition()<cr>')
+map('n', '<leader>f', '<cmd>FzfLua files<cr>')
+map('n', '<leader>b', '<cmd>FzfLua buffers<cr>')
+map('n', '<leader>s', '<cmd>FzfLua grep_cword<cr>' )
+map('n', '<leader>t', '<cmd>FzfLua grep<cr>' )
+map('n', '<leader><leader>s', '<cmd>FzfLua lsp_references<cr>')
+
+----------------------------------------------------------------------------------------------------------------
+--                                          lspconfig and nvim-cmp                                            --
+----------------------------------------------------------------------------------------------------------------
+
+local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+local servers = { 'pyright', 'clangd' }
+local lspconfig = require('lspconfig')
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup {
+    capabilities = capabilities,
+  }
+end
+
+local cmp = require('cmp')
+cmp.setup {
+  mapping = cmp.mapping.preset.insert({
+    ['<cr>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    },
+    ['<tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<s-tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+  }),
+  sources = {
+    { name = 'nvim_lsp' },
+  },
+}
+
+
+----------------------------------------------------------------------------------------------------------------
+--                                            nvim-comment                                                    --
+----------------------------------------------------------------------------------------------------------------
+
+require('nvim_comment').setup {create_mappings = false}
+map('n', '<leader>,', ':CommentToggle<cr>')
+map('v', '<leader>,', ':\'<,\'>CommentToggle<cr>')
+
+----------------------------------------------------------------------------------------------------------------
+--                                           flit and leap                                                    --
+----------------------------------------------------------------------------------------------------------------
+
+require('leap').add_default_mappings()
+require('flit').setup {}
+
+----------------------------------------------------------------------------------------------------------------
+--                                          ouroboros.nvim                                                    --
+----------------------------------------------------------------------------------------------------------------
+
+map('n', '<leader>h', ':Ouroboros<cr>', {silent = true})
