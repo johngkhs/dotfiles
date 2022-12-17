@@ -21,21 +21,22 @@ local PACKAGES = {
   'RRethy/vim-illuminate',
   'lewis6991/gitsigns.nvim',
   'jakemason/ouroboros.nvim',
+  'weilbith/nvim-code-action-menu',
+  'hrsh7th/cmp-nvim-lsp-signature-help',
+  'nvim-treesitter/nvim-treesitter',
 }
-
-local paq = require('paq')
 
 local function bootstrap_paq()
     local path = vim.fn.stdpath 'data' .. '/site/pack/paqs/start/paq-nvim'
     if vim.fn.empty(vim.fn.glob(path)) > 0 then
         vim.fn.system { 'git', 'clone', '--depth=1', 'https://github.com/savq/paq-nvim.git', path }
         vim.cmd('packadd paq-nvim')
-        paq(PACKAGES).install()
+        require('paq')(PACKAGES).install()
     end
 end
 
 bootstrap_paq()
-paq(PACKAGES)
+require('paq')(PACKAGES)
 
 ----------------------------------------------------------------------------------------------------------------
 --                                             functions                                                      --
@@ -124,6 +125,23 @@ map('n', '<c-l>', '<cmd>NvimTmuxNavigateRight<cr>', {silent = true})
 require('hardline').setup {}
 
 ----------------------------------------------------------------------------------------------------------------
+--                                        nvim-code-action-menu                                               --
+----------------------------------------------------------------------------------------------------------------
+
+require('code_action_menu')
+map('n', '<leader><leader>f', '<cmd>CodeActionMenu<cr>')
+
+----------------------------------------------------------------------------------------------------------------
+--                                          nvim-treesitter                                                   --
+----------------------------------------------------------------------------------------------------------------
+
+
+require('nvim-treesitter.configs').setup {
+  ensure_installed = { "cpp", "python" },
+  highlight = { enable = true }
+}
+
+----------------------------------------------------------------------------------------------------------------
 --                                             renamer                                                        --
 ----------------------------------------------------------------------------------------------------------------
 
@@ -165,6 +183,8 @@ map('n', '<leader><leader>s', '<cmd>FzfLua lsp_references<cr>')
 --                                          lspconfig and nvim-cmp                                            --
 ----------------------------------------------------------------------------------------------------------------
 
+require('cmp_nvim_lsp_signature_help')
+
 local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 local servers = { 'pyright', 'clangd' }
 local lspconfig = require('lspconfig')
@@ -199,10 +219,13 @@ cmp.setup {
   }),
   sources = {
     { name = 'nvim_lsp' },
+    { name = 'nvim_lsp_signature_help' },
+  }, {
+    { name = 'buffer' },
   },
 }
 
-map('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<cr>')
+map('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float({focus = false})<cr>')
 
 ----------------------------------------------------------------------------------------------------------------
 --                                            nvim-comment                                                    --
@@ -213,7 +236,7 @@ map('n', '<leader>,', ':CommentToggle<cr>')
 map('v', '<leader>,', ':\'<,\'>CommentToggle<cr>')
 
 ----------------------------------------------------------------------------------------------------------------
---                                           flit and leap                                                    --
+--                                           leap and flit                                                    --
 ----------------------------------------------------------------------------------------------------------------
 
 require('leap').add_default_mappings()
