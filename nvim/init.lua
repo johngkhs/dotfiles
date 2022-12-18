@@ -14,6 +14,9 @@ local PACKAGES = {
   'neovim/nvim-lspconfig',
   'hrsh7th/nvim-cmp',
   'hrsh7th/cmp-nvim-lsp',
+  'hrsh7th/cmp-buffer',
+  'hrsh7th/cmp-path',
+  'onsails/lspkind.nvim',
   'ojroques/nvim-hardline',
   'nvim-lua/plenary.nvim',
   'filipdutescu/renamer.nvim',
@@ -180,12 +183,15 @@ map('n', '<leader>b', '<cmd>FzfLua buffers<cr>')
 map('n', '<leader>s', '<cmd>FzfLua grep_cword<cr>' )
 map('n', '<leader>t', '<cmd>FzfLua grep<cr>' )
 map('n', '<leader><leader>s', '<cmd>FzfLua lsp_references<cr>')
+map('n', '<leader>a', '<cmd>FzfLua grep_last<cr>' )
+map('n', '<leader>g', '<cmd>FzfLua live_grep_native<cr>' )
 
 ----------------------------------------------------------------------------------------------------------------
 --                                          lspconfig and nvim-cmp                                            --
 ----------------------------------------------------------------------------------------------------------------
 
 require('cmp_nvim_lsp_signature_help')
+local lspkind = require('lspkind')
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -209,11 +215,17 @@ cmp.setup {
       if cmp.visible() then cmp.select_prev_item() else fallback() end
     end, { 'i', 's' }),
   }),
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'nvim_lsp_signature_help' },
-    { name = 'buffer' },
+  window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
   },
+  sources = cmp.config.sources({
+      { name = 'nvim_lsp', group_index = 1 },
+      { name = 'buffer', group_index = 2 },
+      { name = 'nvim_lsp_signature_help', group_index = 3 },
+      { name = 'path', group_index = 4 },
+  }),
+  formatting = { format = lspkind.cmp_format() },
 }
 
 map('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float({focus = false})<cr>')
