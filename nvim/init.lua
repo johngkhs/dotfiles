@@ -11,7 +11,6 @@ local PACKAGES = {
   'ibhagwan/fzf-lua',
   'terrortylor/nvim-comment',
   'PeterRincker/vim-argumentative',
-  'derekwyatt/vim-fswitch',
   'neovim/nvim-lspconfig',
   'hrsh7th/nvim-cmp',
   'hrsh7th/cmp-nvim-lsp',
@@ -186,16 +185,15 @@ map('n', '<leader><leader>s', '<cmd>FzfLua lsp_references<cr>')
 --                                          lspconfig and nvim-cmp                                            --
 ----------------------------------------------------------------------------------------------------------------
 
+require('cmp_nvim_lsp_signature_help')
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
 
-require('cmp_nvim_lsp_signature_help')
-
-local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local servers = { 'pyright', 'clangd' }
 local lspconfig = require('lspconfig')
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
-    capabilities = capabilities,
+    capabilities = capabilities
   }
 end
 
@@ -219,6 +217,7 @@ cmp.setup {
 }
 
 map('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float({focus = false})<cr>')
+map('n', '<leader>i', '<cmd>lua vim.lsp.buf.hover()<cr>')
 
 ----------------------------------------------------------------------------------------------------------------
 --                                            nvim-comment                                                    --
