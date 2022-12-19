@@ -23,7 +23,6 @@ local PACKAGES = {
   'RRethy/vim-illuminate',
   'lewis6991/gitsigns.nvim',
   'jakemason/ouroboros.nvim',
-  'weilbith/nvim-code-action-menu',
   'hrsh7th/cmp-nvim-lsp-signature-help',
   'nvim-treesitter/nvim-treesitter',
   'elihunter173/dirbuf.nvim',
@@ -130,27 +129,20 @@ map('n', '<c-l>', '<cmd>NvimTmuxNavigateRight<cr>', {silent = true})
 require('hardline').setup {}
 
 ----------------------------------------------------------------------------------------------------------------
---                                        nvim-code-action-menu                                               --
-----------------------------------------------------------------------------------------------------------------
-
-require('code_action_menu')
-map('n', '<leader><leader>f', '<cmd>CodeActionMenu<cr>')
-
-----------------------------------------------------------------------------------------------------------------
 --                                          nvim-treesitter                                                   --
 ----------------------------------------------------------------------------------------------------------------
 
 
 require('nvim-treesitter.configs').setup {
   ensure_installed = { "cpp", "python" },
-  highlight = { enable = true }
+  highlight = { enable = true },
 }
 
 ----------------------------------------------------------------------------------------------------------------
 --                                             renamer                                                        --
 ----------------------------------------------------------------------------------------------------------------
 
-require('renamer').setup {}
+require('renamer').setup { empty = true }
 map('n', '<leader><leader>r', '<cmd>lua require("renamer").rename()<cr>', {silent = true})
 map('v', '<leader><leader>r', '<cmd>lua require("renamer").rename()<cr>', {silent = true})
 
@@ -173,11 +165,11 @@ require('gitsigns').setup {}
 require('fzf-lua').setup {
   winopts = {
     fullscreen = true,
-    preview = { layout = 'vertical', vertical = 'up:45%' }
+    preview = { layout = 'vertical', vertical = 'up:45%' },
   }
 }
 
-map('n', '<enter>', '<cmd>lua vim.lsp.buf.definition()<cr>')
+map('n', '<enter>', '<cmd>lua require("fzf-lua").lsp_definitions({ jump_to_single_result = true })<cr>')
 map('n', '<leader>f', '<cmd>FzfLua files<cr>')
 map('n', '<leader>b', '<cmd>FzfLua buffers<cr>')
 map('n', '<leader>s', '<cmd>FzfLua grep_cword<cr>' )
@@ -185,6 +177,7 @@ map('n', '<leader>t', '<cmd>FzfLua grep<cr>' )
 map('n', '<leader><leader>s', '<cmd>FzfLua lsp_references<cr>')
 map('n', '<leader>a', '<cmd>FzfLua grep_last<cr>' )
 map('n', '<leader>g', '<cmd>FzfLua live_grep_native<cr>' )
+map('n', '<leader><leader>f', '<cmd>lua require("fzf-lua").lsp_code_actions({ winopts = { fullscreen = false } })<cr>')
 
 ----------------------------------------------------------------------------------------------------------------
 --                                          lspconfig and nvim-cmp                                            --
