@@ -144,9 +144,10 @@ require('nvim-treesitter.configs').setup {
 --                                             renamer                                                        --
 ----------------------------------------------------------------------------------------------------------------
 
-require('renamer').setup { empty = true }
-map('n', '<leader><leader>r', '<cmd>lua require("renamer").rename()<cr>', {silent = true})
-map('v', '<leader><leader>r', '<cmd>lua require("renamer").rename()<cr>', {silent = true})
+require('renamer').setup {}
+
+map('n', '<leader><leader>r', '<cmd>lua require("renamer").rename({ empty = true })<cr>', {silent = true})
+map('v', '<leader><leader>r', '<cmd>lua require("renamer").rename({ empty = true })<cr>', {silent = true})
 
 ----------------------------------------------------------------------------------------------------------------
 --                                            illuminate                                                      --
