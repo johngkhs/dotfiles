@@ -16,6 +16,8 @@ local PACKAGES = {
   'hrsh7th/cmp-nvim-lsp',
   'hrsh7th/cmp-buffer',
   'hrsh7th/cmp-path',
+  'hrsh7th/vim-vsnip',
+  'hrsh7th/vim-vsnip-integ',
   'onsails/lspkind.nvim',
   'ojroques/nvim-hardline',
   'nvim-lua/plenary.nvim',
@@ -198,6 +200,7 @@ end
 
 local cmp = require('cmp')
 cmp.setup {
+  snippet = { expand = function(args) vim.fn["vsnip#anonymous"](args.body) end },
   mapping = cmp.mapping.preset.insert({
     ['<cr>'] = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = true, },
     ['<c-space>'] = cmp.mapping.complete(),
@@ -214,6 +217,7 @@ cmp.setup {
   },
   sources = cmp.config.sources({
       { name = 'nvim_lsp', group_index = 1 },
+      { name = 'vsnip', group_index = 1 },
       { name = 'buffer', group_index = 2 },
       { name = 'nvim_lsp_signature_help', group_index = 3 },
       { name = 'path', group_index = 4 },
