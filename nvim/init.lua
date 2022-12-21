@@ -179,7 +179,8 @@ map('n', '<leader>s', '<cmd>FzfLua grep_cword<cr>' )
 map('n', '<leader>t', '<cmd>FzfLua grep<cr>' )
 map('n', '<leader><leader>s', '<cmd>FzfLua lsp_references<cr>')
 map('n', '<leader>a', '<cmd>FzfLua grep_last<cr>' )
-map('n', '<leader>g', '<cmd>FzfLua live_grep_native<cr>' )
+map('n', '<leader>g', '<cmd>FzfLua lsp_live_workspace_symbols<cr>' )
+map('n', '<leader><leader>g', '<cmd>FzfLua live_grep_native<cr>' )
 map('n', '<leader><leader>f', '<cmd>lua require("fzf-lua").lsp_code_actions({ winopts = { fullscreen = false } })<cr>')
 
 ----------------------------------------------------------------------------------------------------------------
