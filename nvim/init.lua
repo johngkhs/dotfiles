@@ -300,4 +300,18 @@ require("dapui").setup {
 map('n', '<leader>l', '<cmd>DapContinue<cr>')
 map('n', '<leader><leader>t', '<cmd>DapTerminate<cr>')
 map('n', '<leader><leader>b', '<cmd>DapToggleBreakpoint<cr>')
-map('n', '<leader><leader>i', '<cmd>lua require("dapui").toggle()<cr>')
+map('n', '<leader><leader>p', '<cmd>lua require("dapui").toggle()<cr>')
+
+----------------------------------------------------------------------------------------------------------------
+--                                              cppman                                                        --
+----------------------------------------------------------------------------------------------------------------
+
+function cppman_lookup(word)
+  local word = vim.api.nvim_call_function('expand', {'<cword>'})
+  vim.api.nvim_command('botright vnew')
+  local columns = vim.api.nvim_win_get_width(0) - 2
+  vim.api.nvim_command('read !cppman --force-columns=' .. columns .. ' ' .. word)
+  vim.api.nvim_command('setlocal ft=man nomod ro')
+end
+
+map('n', '<leader><leader>i', '<cmd>lua cppman_lookup()<cr>gg', {silent = true})
