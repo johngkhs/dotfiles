@@ -204,7 +204,7 @@ local cmp = require('cmp')
 cmp.setup {
   snippet = { expand = function(args) vim.fn["vsnip#anonymous"](args.body) end },
   mapping = cmp.mapping.preset.insert({
-    ['<cr>'] = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = true, },
+    ['<cr>'] = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
     ['<c-space>'] = cmp.mapping.complete(),
     ['<tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then cmp.select_next_item() else fallback() end
