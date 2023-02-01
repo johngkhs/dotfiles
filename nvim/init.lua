@@ -30,6 +30,7 @@ local PACKAGES = {
   'elihunter173/dirbuf.nvim',
   'mfussenegger/nvim-dap',
   'rcarriga/nvim-dap-ui',
+  'j-hui/fidget.nvim',
 }
 
 local function bootstrap_paq()
@@ -136,7 +137,7 @@ require('hardline').setup {}
 
 
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { "cpp", "python" },
+  ensure_installed = { "lua", "cpp", "python" },
   highlight = { enable = true },
 }
 
@@ -315,3 +316,9 @@ function cppman_lookup(word)
 end
 
 map('n', '<leader><leader>i', '<cmd>lua cppman_lookup()<cr>gg', {silent = true})
+
+----------------------------------------------------------------------------------------------------------------
+--                                              fidget                                                        --
+----------------------------------------------------------------------------------------------------------------
+
+require('fidget').setup {}
