@@ -31,6 +31,8 @@ local PACKAGES = {
   'mfussenegger/nvim-dap',
   'rcarriga/nvim-dap-ui',
   'j-hui/fidget.nvim',
+  'johngkhs/quickfix-reflector.vim',
+  'milkypostman/vim-togglelist',
 }
 
 local function bootstrap_paq()
@@ -137,7 +139,7 @@ require('hardline').setup {}
 
 
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { "lua", "cpp", "python" },
+  ensure_installed = { 'vim', 'lua', 'cpp', 'python' },
   highlight = { enable = true },
 }
 
@@ -179,7 +181,7 @@ map('n', '<leader>b', '<cmd>FzfLua buffers<cr>')
 map('n', '<leader>s', '<cmd>FzfLua grep_cword<cr>' )
 map('n', '<leader>t', '<cmd>FzfLua grep<cr>' )
 map('n', '<leader><leader>s', '<cmd>FzfLua lsp_references<cr>')
-map('n', '<leader>a', '<cmd>FzfLua grep_last<cr>' )
+map('n', '<leader><leader>a', '<cmd>FzfLua grep_last<cr>' )
 map('n', '<leader>g', '<cmd>FzfLua lsp_live_workspace_symbols<cr>' )
 map('n', '<leader><leader>g', '<cmd>FzfLua live_grep_native<cr>' )
 map('n', '<leader><leader>f', '<cmd>lua require("fzf-lua").lsp_code_actions({ winopts = { fullscreen = false } })<cr>')
@@ -322,3 +324,13 @@ map('n', '<leader><leader>i', '<cmd>lua cppman_lookup()<cr>gg', {silent = true})
 ----------------------------------------------------------------------------------------------------------------
 
 require('fidget').setup {}
+
+----------------------------------------------------------------------------------------------------------------
+--                                           vim-togglelist                                                   --
+----------------------------------------------------------------------------------------------------------------
+
+vim.g.toggle_list_no_mappings = true
+map('n', '<leader>a', '<cmd>call ToggleQuickfixList()<cr>')
+vim.cmd('autocmd FileType qf wincmd J')
+vim.cmd('autocmd FileType qf set winheight=35')
+
