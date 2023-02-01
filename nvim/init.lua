@@ -332,5 +332,4 @@ require('fidget').setup {}
 vim.g.toggle_list_no_mappings = true
 map('n', '<leader>a', '<cmd>call ToggleQuickfixList()<cr>')
 vim.cmd('autocmd FileType qf wincmd J')
-vim.cmd('autocmd FileType qf set winheight=35')
-
+vim.cmd('autocmd FileType qf set winheight=30')
