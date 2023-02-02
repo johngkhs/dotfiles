@@ -24,7 +24,6 @@ local PACKAGES = {
   'filipdutescu/renamer.nvim',
   'RRethy/vim-illuminate',
   'lewis6991/gitsigns.nvim',
-  'jakemason/ouroboros.nvim',
   'hrsh7th/cmp-nvim-lsp-signature-help',
   'nvim-treesitter/nvim-treesitter',
   'elihunter173/dirbuf.nvim',
@@ -112,6 +111,8 @@ map('n', '<leader>R', ':%s@<c-r><c-w>@@g<left><left>')
 map('v', '<leader>R', 'y:%s@<C-r>\"@@g<left><left>')
 
 map('n', '<leader>j', 'mzJ`z')
+
+map('n', '<leader>h', ':e %:p:s,.h$,.XZXZX,:s,.cpp$,.h,:s,.XZXZX$,.cpp,<cr>', {silent = true})
 
 map('n', '<leader>E', ':vsplit $MYVIMRC<cr>')
 map('n', '<leader>S', ':source $MYVIMRC<cr>')
@@ -247,12 +248,6 @@ map('v', '<leader>,', ':\'<,\'>CommentToggle<cr>')
 
 require('leap').add_default_mappings()
 require('flit').setup {}
-
-----------------------------------------------------------------------------------------------------------------
---                                          ouroboros.nvim                                                    --
-----------------------------------------------------------------------------------------------------------------
-
-map('n', '<leader>h', ':Ouroboros<cr>', {silent = true})
 
 ----------------------------------------------------------------------------------------------------------------
 --                                           dirbuf.nvim                                                      --
