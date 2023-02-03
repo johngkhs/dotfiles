@@ -32,6 +32,7 @@ local PACKAGES = {
   'j-hui/fidget.nvim',
   'johngkhs/quickfix-reflector.vim',
   'milkypostman/vim-togglelist',
+  'AndrewRadev/sideways.vim',
 }
 
 local function bootstrap_paq()
@@ -328,3 +329,10 @@ vim.g.toggle_list_no_mappings = true
 map('n', '<leader>a', '<cmd>call ToggleQuickfixList()<cr>')
 vim.cmd('autocmd FileType qf wincmd J')
 vim.cmd('autocmd FileType qf set winheight=30')
+
+----------------------------------------------------------------------------------------------------------------
+--                                            sideways.vim                                                    --
+----------------------------------------------------------------------------------------------------------------
+--
+map('n', '<left>', '<cmd>SidewaysLeft<cr>')
+map('n', '<right>', '<cmd>SidewaysRight<cr>')
