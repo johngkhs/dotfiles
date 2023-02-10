@@ -174,6 +174,9 @@ require('fzf-lua').setup {
   winopts = {
     fullscreen = true,
     preview = { layout = 'vertical', vertical = 'up:45%' },
+  },
+  fzf_opts = {
+    ['-m --bind'] = 'ctrl-a:toggle-all',
   }
 }
 
