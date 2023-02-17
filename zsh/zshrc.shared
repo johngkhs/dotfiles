@@ -187,7 +187,7 @@ d/() {
 }
 
 g.() {
-  git diff --name-only | single_select_fzf
+  git diff --name-only --relative | single_select_fzf
 }
 
 v() {
