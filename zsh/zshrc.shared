@@ -186,6 +186,10 @@ d/() {
   dir="$(locate_ignorecase $@ | single_select_fzf)" && fasd_cd "$dir"
 }
 
+g.() {
+  git diff --name-only | single_select_fzf
+}
+
 v() {
   local file
   if [ $# -eq 0 ]
