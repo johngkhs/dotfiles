@@ -33,6 +33,8 @@ local PACKAGES = {
   'johngkhs/quickfix-reflector.vim',
   'milkypostman/vim-togglelist',
   'AndrewRadev/sideways.vim',
+  'kana/vim-textobj-user',
+  'johngkhs/vim-textobj-variable-segment',
 }
 
 local function bootstrap_paq()
@@ -200,7 +202,7 @@ local lspkind = require('lspkind')
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-local servers = { 'pyright', 'clangd' }
+local servers = { 'pyright', 'ccls' }
 local lspconfig = require('lspconfig')
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
@@ -336,6 +338,6 @@ vim.cmd('autocmd FileType qf set winheight=30')
 ----------------------------------------------------------------------------------------------------------------
 --                                            sideways.vim                                                    --
 ----------------------------------------------------------------------------------------------------------------
---
+
 map('n', '<left>', '<cmd>SidewaysLeft<cr>')
 map('n', '<right>', '<cmd>SidewaysRight<cr>')
