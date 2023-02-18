@@ -190,6 +190,10 @@ g.() {
   git diff --name-only --relative | single_select_fzf
 }
 
+h.() {
+  git l | single_select_fzf | grep -o -m1 '[a-zA-Z0-9]\{6,\}' | head -1
+}
+
 v() {
   local file
   if [ $# -eq 0 ]
