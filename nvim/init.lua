@@ -206,7 +206,7 @@ local servers = { 'pyright', 'ccls' }
 local lspconfig = require('lspconfig')
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
-    capabilities = capabilities
+    capabilities = capabilities,
   }
 end
 
@@ -245,6 +245,7 @@ map('n', '<leader>i', '<cmd>lua vim.lsp.buf.hover()<cr>')
 ----------------------------------------------------------------------------------------------------------------
 
 require('nvim_comment').setup {create_mappings = false}
+vim.cmd('autocmd BufEnter *.cpp,*.h :lua vim.api.nvim_buf_set_option(0, "commentstring", "// %s")')
 map('n', '<leader>,', ':CommentToggle<cr>')
 map('v', '<leader>,', ':\'<,\'>CommentToggle<cr>')
 
