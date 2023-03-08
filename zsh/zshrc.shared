@@ -187,11 +187,11 @@ d/() {
 }
 
 g.() {
-  git diff --name-only --relative | single_select_fzf
+  git l | single_select_fzf | grep -o -m1 '[a-zA-Z0-9]\{6,\}' | head -1
 }
 
 h.() {
-  git l | single_select_fzf | grep -o -m1 '[a-zA-Z0-9]\{6,\}' | head -1
+  git diff --name-only --relative | single_select_fzf
 }
 
 v() {
