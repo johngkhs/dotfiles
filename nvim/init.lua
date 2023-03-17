@@ -269,40 +269,42 @@ map('n', '<leader>-', '<cmd>DirbufQuit<cr>')
 
 local dap = require('dap')
 dap.adapters.lldb = {
-	type = "executable",
-  command = '/Users/jkaczor/llvm/bin/lldb-vscode',
-	name = "lldb",
+	type = 'executable',
+  command = '</path/to/lldb-vscode>',
+	name = 'lldb',
 }
 
 dap.configurations.cpp = {
   {
-    name = "Launch",
-    type = "lldb",
-    request = "launch",
+    name = 'Launch',
+    type = 'lldb',
+    request = 'launch',
     program = vim.fn.getcwd() .. '/a.out',
-    cwd = "${workspaceFolder}",
-    stopOnEntry = true,
-    args = {},
-    runInTerminal = true,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = {'-enable-pretty-printing'},
+    runInTerminal = false,
   }
 }
 
-require("dapui").setup {
+require('dapui').setup {
  layouts = {
     {
-      elements = { "scopes" },
+      elements = { 'scopes' },
       size = 0.35,
-      position = "left",
+      position = 'left',
     },
     {
-      elements = { "repl" },
-      size = 0.15,
-      position = "bottom",
+      elements = { 'repl' },
+      size = 0.35,
+      position = 'bottom',
     },
   },
 }
 
-map('n', '<leader>l', '<cmd>DapContinue<cr>')
+map('n', '<leader><leader>l', '<cmd>DapContinue<cr>')
+map('n', '<leader><leader>j', '<cmd>DapStepOver<cr>')
+map('n', '<leader><leader>k', '<cmd>DapStepInto<cr>')
 map('n', '<leader><leader>t', '<cmd>DapTerminate<cr>')
 map('n', '<leader><leader>b', '<cmd>DapToggleBreakpoint<cr>')
 map('n', '<leader><leader>p', '<cmd>lua require("dapui").toggle()<cr>')
