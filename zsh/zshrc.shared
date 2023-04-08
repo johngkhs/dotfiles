@@ -158,11 +158,11 @@ fasd_nvim() {
 }
 
 multi_select_fzf() {
-  fzf -m
+  fzf -m --ansi
 }
 
 single_select_fzf() {
-  fzf +m
+  fzf +m --ansi
 }
 
 d() {
@@ -232,11 +232,11 @@ br() {
 }
 
 t.() {
-  tmuxcomplete | sort -u | fzf-tmux -d 90% +m
+  tmuxcomplete | sort -u | single_select_fzf
 }
 
 f.() {
-  (find_subfiles; fasd -l) | fzf-tmux -d 90% +m
+  (find_subfiles; fasd -l) | single_select_fzf
 }
 
 fzf-history-widget() {
