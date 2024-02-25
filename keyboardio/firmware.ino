@@ -5,6 +5,7 @@
 #include "Kaleidoscope-HostPowerManagement.h"
 #include "Kaleidoscope-OneShot.h"
 #include "Kaleidoscope-LED-ActiveModColor.h"
+#include "Kaleidoscope-LEDControl.h"
 #include "Kaleidoscope-Escape-OneShot.h"
 #include "Kaleidoscope-Qukeys.h"
 
@@ -62,30 +63,30 @@ KEYMAPS(
 
   )
 
-const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
-  if (!keyIsPressed(keyState)) {
-    return MACRO_NONE;
-  }
-  switch (macroIndex) {
-    case M_TAB: return MACRODOWN(D(LeftShift), T(9), U(LeftShift));
-    case M_ENTER: return MACRODOWN(D(LeftShift), T(0), U(LeftShift));
-    case M_ESCAPE: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift));
-    case M_BUTTERFLY: return MACRODOWN(D(LeftShift), T(RightBracket), U(LeftShift));
-    case M_PAGEUP: return MACRODOWN(D(LeftControl), T(Backspace), U(LeftControl));
-    case M_FN_PAGEUP: return MACRODOWN(D(LeftShift), T(Home), T(Backspace), U(LeftShift));
-    case M_FN_SEMICOLON: return MACRODOWN(D(LeftShift), T(Quote), U(LeftShift), D(LeftShift), T(Quote), U(LeftShift), T(LeftArrow));
-    case M_FN_APOSTROPHE: return MACRODOWN(T(Quote), T(Quote), T(LeftArrow));
-    case M_FN_EQUALS: return MACRODOWN(T(Equals), T(Equals));
-    case M_FN_COMMA: return MACRODOWN(D(LeftShift), T(Comma), U(LeftShift), D(LeftShift), T(Period), U(LeftShift), T(LeftArrow));
-    case M_FN_PERIOD: return MACRODOWN(T(Minus), D(LeftShift), T(Period), U(LeftShift));
-    case M_FN_B: return MACRODOWN(D(LeftControl), T(LeftArrow), U(LeftControl));
-    case M_FN_W: return MACRODOWN(D(LeftControl), T(RightArrow), U(LeftControl));
-    case M_FN_TAB: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift), T(LeftArrow));
-    case M_FN_ENTER: return MACRODOWN(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift));
-    case M_FN_ESCAPE: return MACRODOWN(T(LeftBracket), T(RightBracket), T(LeftArrow));
-    case M_FN_BUTTERFLY: return MACRODOWN(T(LeftBracket), T(RightBracket));
-    case M_FN_LED: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift), T(LeftArrow));
-    case M_FN_ANY: return MACRODOWN(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift));
+const macro_t* macroAction(uint8_t macro_id, KeyEvent &event) {
+  if (keyToggledOn(event.state)) {
+    switch(macro_id) {
+      case M_TAB: return MACRO(D(LeftShift), T(9), U(LeftShift));
+      case M_ENTER: return MACRO(D(LeftShift), T(0), U(LeftShift));
+      case M_ESCAPE: return MACRO(D(LeftShift), T(LeftBracket), U(LeftShift));
+      case M_BUTTERFLY: return MACRO(D(LeftShift), T(RightBracket), U(LeftShift));
+      case M_PAGEUP: return MACRO(D(LeftControl), T(Backspace), U(LeftControl));
+      case M_FN_PAGEUP: return MACRO(D(LeftShift), T(Home), T(Backspace), U(LeftShift));
+      case M_FN_SEMICOLON: return MACRO(D(LeftShift), T(Quote), U(LeftShift), D(LeftShift), T(Quote), U(LeftShift), T(LeftArrow));
+      case M_FN_APOSTROPHE: return MACRO(T(Quote), T(Quote), T(LeftArrow));
+      case M_FN_EQUALS: return MACRO(T(Equals), T(Equals));
+      case M_FN_COMMA: return MACRO(D(LeftShift), T(Comma), U(LeftShift), D(LeftShift), T(Period), U(LeftShift), T(LeftArrow));
+      case M_FN_PERIOD: return MACRO(T(Minus), D(LeftShift), T(Period), U(LeftShift));
+      case M_FN_B: return MACRO(D(LeftControl), T(LeftArrow), U(LeftControl));
+      case M_FN_W: return MACRO(D(LeftControl), T(RightArrow), U(LeftControl));
+      case M_FN_TAB: return MACRO(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift), T(LeftArrow));
+      case M_FN_ENTER: return MACRO(D(LeftShift), T(9), U(LeftShift), D(LeftShift), T(0), U(LeftShift));
+      case M_FN_ESCAPE: return MACRO(T(LeftBracket), T(RightBracket), T(LeftArrow));
+      case M_FN_BUTTERFLY: return MACRO(T(LeftBracket), T(RightBracket));
+      case M_FN_LED: return MACRO(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift), T(LeftArrow));
+      case M_FN_ANY: return MACRO(D(LeftShift), T(LeftBracket), U(LeftShift), D(LeftShift), T(RightBracket), U(LeftShift));
+      default: break;
+    }
   }
   return MACRO_NONE;
 }
