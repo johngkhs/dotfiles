@@ -16,6 +16,7 @@ set -g mouse off
 set -g status off
 set-window-option -g mode-keys vi
 set-option -g pane-active-border-style bg=blue,fg=brightgreen
+set-option -g update-environment "DISPLAY"
 
 ###############################################################################################################
 #                                                 bindings                                                    #
