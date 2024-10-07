@@ -214,6 +214,11 @@ v.() {
   file="$(find_subfiles | single_select_fzf)" && fasd_nvim "$file"
 }
 
+c.() {
+  local file
+  file="$(find_subfiles | single_select_fzf)" && echo "$file" | xc
+}
+
 _fzf_branch() {
   local branches branch
   branches=$(git branch --sort=-committerdate | grep -v HEAD) &&

@@ -344,3 +344,17 @@ vim.cmd('autocmd FileType qf set winheight=30')
 
 map('n', '<left>', '<cmd>SidewaysLeft<cr>')
 map('n', '<right>', '<cmd>SidewaysRight<cr>')
+
+----------------------------------------------------------------------------------------------------------------
+--                                             clipboard                                                      --
+----------------------------------------------------------------------------------------------------------------
+
+function refresh_DISPLAY()
+  local command=vim.api.nvim_exec2('![ -n "$TMUX" ] && tmux showenv -s', {output = true})
+  local display = string.match(command.output, 'DISPLAY="([^"]+)"')
+  if display ~= nil and display ~= '' then
+    vim.api.nvim_command('let $DISPLAY="' .. display .. '"')
+  end
+end
+
+map('n', '<leader><leader>c', '', {callback = refresh_DISPLAY})
