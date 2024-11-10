@@ -282,6 +282,5 @@ function preexec {
 
 alias g='git'
 alias x='extract'
-alias b='bat'
 alias fd='find_subfiles | rg'
 alias rg='rg --smart-case'

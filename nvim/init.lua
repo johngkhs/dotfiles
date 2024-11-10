@@ -27,8 +27,6 @@ local PACKAGES = {
   'hrsh7th/cmp-nvim-lsp-signature-help',
   'nvim-treesitter/nvim-treesitter',
   'elihunter173/dirbuf.nvim',
-  'mfussenegger/nvim-dap',
-  'rcarriga/nvim-dap-ui',
   'j-hui/fidget.nvim',
   'johngkhs/quickfix-reflector.vim',
   'milkypostman/vim-togglelist',
@@ -262,66 +260,6 @@ require('flit').setup {}
 
 require('dirbuf').setup {}
 map('n', '<leader>-', '<cmd>DirbufQuit<cr>')
-
-----------------------------------------------------------------------------------------------------------------
---                                             nvim-dap                                                       --
-----------------------------------------------------------------------------------------------------------------
-
-local dap = require('dap')
-dap.adapters.lldb = {
-	type = 'executable',
-  command = '</path/to/lldb-vscode>',
-	name = 'lldb',
-}
-
-dap.configurations.cpp = {
-  {
-    name = 'Launch',
-    type = 'lldb',
-    request = 'launch',
-    program = vim.fn.getcwd() .. '/a.out',
-    cwd = '${workspaceFolder}',
-    stopOnEntry = false,
-    args = {'-enable-pretty-printing'},
-    runInTerminal = false,
-  }
-}
-
-require('dapui').setup {
- layouts = {
-    {
-      elements = { 'scopes' },
-      size = 0.35,
-      position = 'left',
-    },
-    {
-      elements = { 'repl' },
-      size = 0.35,
-      position = 'bottom',
-    },
-  },
-}
-
-map('n', '<leader><leader>l', '<cmd>DapContinue<cr>')
-map('n', '<leader><leader>j', '<cmd>DapStepOver<cr>')
-map('n', '<leader><leader>k', '<cmd>DapStepInto<cr>')
-map('n', '<leader><leader>t', '<cmd>DapTerminate<cr>')
-map('n', '<leader><leader>b', '<cmd>DapToggleBreakpoint<cr>')
-map('n', '<leader><leader>p', '<cmd>lua require("dapui").toggle()<cr>')
-
-----------------------------------------------------------------------------------------------------------------
---                                              cppman                                                        --
-----------------------------------------------------------------------------------------------------------------
-
-function cppman_lookup(word)
-  local word = vim.api.nvim_call_function('expand', {'<cword>'})
-  vim.api.nvim_command('botright vnew')
-  local columns = vim.api.nvim_win_get_width(0) - 2
-  vim.api.nvim_command('read !cppman --force-columns=' .. columns .. ' ' .. word)
-  vim.api.nvim_command('setlocal ft=man nomod ro')
-end
-
-map('n', '<leader><leader>i', '<cmd>lua cppman_lookup()<cr>gg', {silent = true})
 
 ----------------------------------------------------------------------------------------------------------------
 --                                              fidget                                                        --

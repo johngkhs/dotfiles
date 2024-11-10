@@ -20,9 +20,11 @@ cd "$script_dir/tmux" && ./install.sh
 cd "$script_dir/zsh" && ./install.sh
 cd "$script_dir/nvim" && ./install.sh
 echo "Dotfile installation complete."
-echo "You will also need to install bat, fzf, tmux, rg, nvim, zsh, cppman, and the nerd patched meslo font."
+echo "You will also need to install git-delta, fzf, tmux, rg, nvim, zsh, and the nerd patched meslo font."
 
 platform="$(uname)"
 if [[ "$platform" == *Darwin* ]]; then
+  cp "$script_dir/yabai/move_space.sh" "$HOME/usr/bin"
+  echo "You will also need to install coreutils, jq, and reattach-to-user-namespace."
   echo "You must manually install Spaceman, BetterTouchTool, and yabai to replicate TotalSpaces2."
 fi
