@@ -27,4 +27,5 @@ if [[ "$platform" == *Darwin* ]]; then
   cp "$script_dir/yabai/move_space.sh" "$HOME/usr/bin"
   echo "You will also need to install coreutils, jq, and reattach-to-user-namespace."
   echo "You must manually install Spaceman, BetterTouchTool, and yabai to replicate TotalSpaces2."
+  echo "You must manually install Hammerspoon and Vifari as well."
 fi
