@@ -8,3 +8,20 @@ xc() {
 }
 
 whence gls >/dev/null && alias ls='gls --color=auto'
+
+###############################################################################################################
+#                                           osx bookmarks                                                     #
+###############################################################################################################
+
+b() {
+  LEAF_BOOKMARK_XPATH="//dict[key='WebBookmarkType' and string='WebBookmarkTypeLeaf']"
+  local bookmark_title
+  local bookmark_url
+  cp "$HOME/Library/Safari/Bookmarks.plist" /tmp/Bookmarks.plist
+  plutil -convert xml1 /tmp/Bookmarks.plist
+  bookmark_title=$(xmllint --xpath "$LEAF_BOOKMARK_XPATH/dict[key='title']/string/text()" /tmp/Bookmarks.plist | single_select_fzf)
+  if [ -n "$bookmark_title" ]; then
+    bookmark_url=$(xmllint --xpath "$LEAF_BOOKMARK_XPATH/dict[string=\"$bookmark_title\"]/../string[1][preceding-sibling::key='URLString']/text()" /tmp/Bookmarks.plist)
+    [ -n "$bookmark_url" ] && open "$bookmark_url"
+  fi
+}
