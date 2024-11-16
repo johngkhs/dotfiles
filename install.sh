@@ -25,6 +25,8 @@ echo "You will also need to install git-delta, fzf, tmux, rg, nvim, zsh, and the
 platform="$(uname)"
 if [[ "$platform" == *Darwin* ]]; then
   cp "$script_dir/yabai/move_space.sh" "$HOME/usr/bin"
+  mkdir -p "$HOME/.hammerspoon/Spoons/Vifari.spoon"
+  cp "$script_dir/vifari/init.lua" "$HOME/.hammerspoon/Spoons/Vifari.spoon/init.lua"
   echo "You will also need to install coreutils, jq, and reattach-to-user-namespace."
   echo "You must manually install Spaceman, BetterTouchTool, and yabai to replicate TotalSpaces2."
   echo "You must manually install Hammerspoon and Vifari as well."
