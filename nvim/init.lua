@@ -6,8 +6,7 @@ local PACKAGES = {
   'alexghergh/nvim-tmux-navigation',
   'navarasu/onedark.nvim',
   'tpope/vim-repeat',
-  'ggandor/flit.nvim',
-  'ggandor/leap.nvim',
+  'justinmk/vim-sneak',
   'ibhagwan/fzf-lua',
   'terrortylor/nvim-comment',
   'PeterRincker/vim-argumentative',
@@ -248,11 +247,15 @@ map('n', '<leader>,', ':CommentToggle<cr>')
 map('v', '<leader>,', ':\'<,\'>CommentToggle<cr>')
 
 ----------------------------------------------------------------------------------------------------------------
---                                           leap and flit                                                    --
+--                                             vim-sneak                                                      --
 ----------------------------------------------------------------------------------------------------------------
 
-require('leap').add_default_mappings()
-require('flit').setup {}
+map('n', 'f', '<Plug>Sneak_f')
+map('n', 'F', '<Plug>Sneak_F')
+map('n', 't', '<Plug>Sneak_t')
+map('n', 'T', '<Plug>Sneak_T')
+map('n', 's', '<Plug>Sneak_s')
+map('n', 'S', '<Plug>Sneak_S')
 
 ----------------------------------------------------------------------------------------------------------------
 --                                           dirbuf.nvim                                                      --
