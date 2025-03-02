@@ -169,7 +169,7 @@ d() {
   local dir
   if [ $# -eq 0 ]
   then
-        dir=$(fasd -l -d | sed "s@$(pwd)\/@@" | single_select_fzf) && fasd_cd "$dir"
+        dir=$(fasd -l -d -R | sed "s@$(pwd)\/@@" | single_select_fzf) && fasd_cd "$dir"
   else
         fasd_cd "$@"
   fi
@@ -198,7 +198,7 @@ v() {
   local file
   if [ $# -eq 0 ]
   then
-        file="$(fasd -l -f | single_select_fzf)" && fasd_nvim "$file"
+        file="$(fasd -l -f -R | single_select_fzf)" && fasd_nvim "$file"
   else
         fasd_nvim "$@"
   fi
