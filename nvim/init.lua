@@ -250,12 +250,12 @@ map('v', '<leader>,', ':\'<,\'>CommentToggle<cr>')
 --                                             vim-sneak                                                      --
 ----------------------------------------------------------------------------------------------------------------
 
-map('n', 'f', '<Plug>Sneak_f')
-map('n', 'F', '<Plug>Sneak_F')
-map('n', 't', '<Plug>Sneak_t')
-map('n', 'T', '<Plug>Sneak_T')
-map('n', 's', '<Plug>Sneak_s')
-map('n', 'S', '<Plug>Sneak_S')
+map('', 'f', '<Plug>Sneak_f')
+map('', 'F', '<Plug>Sneak_F')
+map('', 't', '<Plug>Sneak_t')
+map('', 'T', '<Plug>Sneak_T')
+map('', 's', '<Plug>Sneak_s')
+map('', 'S', '<Plug>Sneak_S')
 
 ----------------------------------------------------------------------------------------------------------------
 --                                           dirbuf.nvim                                                      --
