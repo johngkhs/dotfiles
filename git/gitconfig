@@ -10,6 +10,7 @@
     ba = branch -avv --sort=committerdate
     d = diff
     dh = diff HEAD
+    fm = fetch origin main:main
     s = status
     ci = commit -a -m
     co = checkout
