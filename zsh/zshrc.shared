@@ -73,6 +73,8 @@ bindkey "^?" backward-delete-char
 #                                            powerlevel10k prompt                                             #
 ###############################################################################################################
 
+source "$HOME/.zsh/zsh-async/async.zsh"
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi

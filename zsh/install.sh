@@ -5,6 +5,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 [[ -d "$HOME/.zsh/plugins/zsh-history-substring-search" ]] || git clone https://github.com/zsh-users/zsh-history-substring-search "$HOME/.zsh/plugins/zsh-history-substring-search"
 [[ -d  "$HOME/.zsh/plugins/fast-syntax-highlighting" ]] || git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git "$HOME/.zsh/plugins/fast-syntax-highlighting"
 [[ -d  "$HOME/.zsh/dircolors-solarized" ]] || git clone https://github.com/seebi/dircolors-solarized.git "$HOME/.zsh/dircolors-solarized"
+[[ -d  "$HOME/.zsh/zsh-async" ]] || git clone https://github.com/mafredri/zsh-async.git "$HOME/.zsh/zsh-async"
 [[ -d  "$HOME/powerlevel10k" ]] || git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$HOME/powerlevel10k"
 [[ -d /tmp/fasd ]] || git clone https://github.com/clvv/fasd /tmp/fasd
 cp /tmp/fasd/fasd "$HOME/usr/bin"

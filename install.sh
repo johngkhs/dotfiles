@@ -20,7 +20,7 @@ cd "$script_dir/tmux" && ./install.sh
 cd "$script_dir/zsh" && ./install.sh
 cd "$script_dir/nvim" && ./install.sh
 echo "Dotfile installation complete."
-echo "You will also need to install git-delta, fzf, tmux, rg, nvim, zsh, and the nerd patched meslo font."
+echo "You will also need to install git-delta, fzf, jj, tmux, rg, nvim, zsh, and the nerd patched meslo font."
 
 platform="$(uname)"
 if [[ "$platform" == *Darwin* ]]; then
