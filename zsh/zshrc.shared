@@ -238,6 +238,18 @@ br() {
   branch="$(_fzf_branch)" && git checkout "$branch"
 }
 
+_fzf_bookmark() {
+  local bookmarks bookmark
+  bookmarks=$(jj bookmark list --sort committer-date-) &&
+  bookmark=$(echo "$bookmarks" | fzf -d $(( 2 + $(wc -l <<< "$bookmarks") )) +m) &&
+  echo "$bookmark" | awk '{print $1}' | sed "s/:$//"
+}
+
+bo() {
+  local bookmark
+  bookmark="$(_fzf_bookmark)" && jj edit "$bookmark"
+}
+
 t.() {
   tmuxcomplete | sort -u | single_select_fzf
 }

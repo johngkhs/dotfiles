@@ -1,0 +1,37 @@
+[user]
+name = "John Kaczor"
+email = "johngkhs@gmail.com"
+
+[aliases]
+b = ["bookmark"]
+cb = ["bookmark", "create", "-r@"]
+co = ["checkout"]
+d = ["diff"]
+e = ["edit"]
+f = ["git", "fetch"]
+l = ["log"]
+m = ["describe", "-m"]
+n = ["new"]
+na = ["new", "--insert-after", "@"]
+nb = ["new", "--insert-before", "@"]
+pu = ["git", "push", "--allow-new"]
+r = ["rebase"]
+rm = ["rebase", "-b@", "-dmain"]
+s = ["status"]
+tug = ["bookmark", "move", "--from", "heads(::@- & (bookmarks() ~ trunk()))", "--to", "@"]
+
+[diff]
+tool = "delta"
+
+[ui]
+default-command = "status"
+editor = "nvim"
+diff-formatter = ":git" # required by `delta`
+pager= ["delta", "--pager", "less -FRX"] # Keeps output from the terminal after closing the pager
+
+# These options allow for `jj diff` and `jj show` to clear the output from the terminal after closing the pager.
+[[--scope]]
+--when.commands = ["diff", "show"]
+
+[--scope.ui]
+pager = "delta"
