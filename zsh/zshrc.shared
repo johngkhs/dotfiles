@@ -240,7 +240,7 @@ br() {
 
 _fzf_bookmark() {
   local bookmarks bookmark
-  bookmarks=$(jj bookmark list --sort committer-date-) &&
+  bookmarks=$(jj bookmark list --quiet --all --sort committer-date- | rg ": " | rg -v "@git|@origin") &&
   bookmark=$(echo "$bookmarks" | fzf -d $(( 2 + $(wc -l <<< "$bookmarks") )) +m) &&
   echo "$bookmark" | awk '{print $1}' | sed "s/:$//"
 }

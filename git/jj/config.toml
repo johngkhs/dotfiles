@@ -10,6 +10,7 @@ d = ["diff"]
 e = ["edit"]
 f = ["git", "fetch"]
 l = ["log"]
+ll = ["log", "-T", "log_with_files"]
 m = ["describe", "-m"]
 n = ["new"]
 na = ["new", "--insert-after", "@"]
@@ -18,7 +19,7 @@ pu = ["git", "push", "--allow-new"]
 r = ["rebase"]
 rm = ["rebase", "-b@", "-dmain"]
 s = ["status"]
-tug = ["bookmark", "move", "--from", "heads(::@- & (bookmarks() ~ trunk()))", "--to", "@"]
+tug = ["bookmark", "move", "--from", "heads(::@ & bookmarks())", "--to", "closest_pushable(@)"]
 
 [diff]
 tool = "delta"
@@ -35,3 +36,27 @@ pager= ["delta", "--pager", "less -FRX"] # Keeps output from the terminal after 
 
 [--scope.ui]
 pager = "delta"
+
+[revset-aliases]
+'closest_pushable(to)' = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
+recent_work = 'ancestors(visible_heads(), 3) & mutable()'
+
+[template-aliases]
+log_with_files = '''
+if(root,
+  format_root_commit(self),
+  label(if(current_working_copy, "working_copy"),
+    concat(
+      format_short_commit_header(self) ++ "\n",
+      separate(" ",
+        if(empty, label("empty", "(empty)")),
+        if(description,
+          description.first_line(),
+          label(if(empty, "empty"), description_placeholder),
+        ),
+      ) ++ "\n",
+      if(self.contained_in("recent_work"), diff.summary()),
+    ),
+  )
+)
+'''
