@@ -3,6 +3,7 @@ name = "John Kaczor"
 email = "johngkhs@gmail.com"
 
 [aliases]
+ab = ["abandon"]
 b = ["bookmark"]
 cb = ["bookmark", "create", "-r@"]
 co = ["checkout"]
