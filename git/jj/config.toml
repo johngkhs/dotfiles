@@ -2,6 +2,9 @@
 name = "John Kaczor"
 email = "johngkhs@gmail.com"
 
+[colors]
+rest = "bright green"
+
 [aliases]
 ab = ["abandon"]
 b = ["bookmark"]
