@@ -1649,7 +1649,7 @@
         trunk()
       )" -T "separate(' ', bookmarks, tags)" 2> /dev/null | cut -d ' ' -f 1)
     if [[ -n $branch ]]; then
-      [[ $branch =~ "\*$" ]] && branch=${branch::-1}
+      [[ $branch =~ "\*$" ]] && branch=${branch:0:-1}
 
       local VCS_STATUS_COMMITS_AFTER=$(jj --ignore-working-copy --at-op=@ --no-pager log --no-graph -r "$branch..@ & (~empty() | merges())" -T '"n"' 2> /dev/null | wc -c | tr -d ' ')
       local VCS_STATUS_COMMITS_BEFORE=$(jj --ignore-working-copy --at-op=@ --no-pager log --no-graph -r "@..$branch & (~empty() | merges())" -T '"n"' 2> /dev/null | wc -c | tr -d ' ')
@@ -1681,7 +1681,7 @@
     local where=${(V)VCS_STATUS_LOCAL_BRANCH}
     # If local branch name or tag is at most 32 characters long, show it in full.
     # Otherwise show the first 12 … the last 12.
-    (( $#where > 32 )) && where[13,-13]="…"
+    # (( $#where > 32 )) && where[13,-13]="…"
     res+="${status_color}${where//\%/%%}"  # escape %
 
     # ‹42 if before the local bookmark
@@ -1691,13 +1691,13 @@
 
 
     ## jj_remote
-    # # ⇣42 if behind the remote.
-    # (( VCS_STATUS_COMMITS_BEHIND )) && res+=" ${green}⇣${VCS_STATUS_COMMITS_BEHIND}"
-    # (( VCS_STATUS_COMMITS_BEHIND_PLUS )) && res+="${VCS_STATUS_COMMITS_BEHIND_PLUS}"
-    # # ⇡42 if ahead of the remote; no leading space if also behind the remote: ⇣42⇡42.
-    # (( VCS_STATUS_COMMITS_AHEAD && !VCS_STATUS_COMMITS_BEHIND )) && res+=" "
-    # (( VCS_STATUS_COMMITS_AHEAD  )) && res+="${green}⇡${VCS_STATUS_COMMITS_AHEAD}"
-    # (( VCS_STATUS_COMMITS_AHEAD_PLUS )) && res+="${VCS_STATUS_COMMITS_AHEAD_PLUS}"
+    # ⇣42 if behind the remote.
+    (( VCS_STATUS_COMMITS_BEHIND )) && res+=" ${green}⇣${VCS_STATUS_COMMITS_BEHIND}"
+    (( VCS_STATUS_COMMITS_BEHIND_PLUS )) && res+="${VCS_STATUS_COMMITS_BEHIND_PLUS}"
+    # ⇡42 if ahead of the remote; no leading space if also behind the remote: ⇣42⇡42.
+    (( VCS_STATUS_COMMITS_AHEAD && !VCS_STATUS_COMMITS_BEHIND )) && res+=" "
+    (( VCS_STATUS_COMMITS_AHEAD  )) && res+="${green}⇡${VCS_STATUS_COMMITS_AHEAD}"
+    (( VCS_STATUS_COMMITS_AHEAD_PLUS )) && res+="${VCS_STATUS_COMMITS_AHEAD_PLUS}"
 
 
     ## jj_change
