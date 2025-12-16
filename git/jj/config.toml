@@ -17,17 +17,21 @@ l = ["log"]
 la = ["log", "-r", "::@"]
 ll = ["log", "-T", "log_with_files"]
 lm = ["log", "-r", "..main"]
+lc = ["log", "-r", "..@"]
 m = ["describe", "-m"]
 n = ["new"]
 na = ["new", "--insert-after"]
 nb = ["new", "--insert-before"]
-nm = ["new", "main", "-m"]
+nm = ["new", "main"]
 pu = ["git", "push", "--allow-new"]
 r = ["rebase"]
 rm = ["rebase", "-b@", "-dmain"]
 s = ["status"]
 sh = ["show"]
+sp = ["split"]
 sq = ["squash"]
+sqp = ["squash", "--from", "previous_bookmark..@"]
+mv = ["rebase", "-r", "@", "--insert-after"]
 tug = ["bookmark", "move", "--from", "heads(::@ & bookmarks())", "--to", "closest_pushable(@)"]
 
 [diff]
@@ -48,6 +52,7 @@ pager = "delta"
 
 [revset-aliases]
 'closest_pushable(to)' = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
+previous_bookmark = 'latest(ancestors(@-) & (trunk() | bookmarks()))'
 recent_work = 'ancestors(visible_heads(), 3) & mutable()'
 
 [template-aliases]
@@ -69,3 +74,6 @@ if(root,
   )
 )
 '''
+
+[fsmonitor]
+backend = "watchman"
