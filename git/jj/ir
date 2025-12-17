@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -u
+
+: "${EDITOR:=nvim}"
+
+log_content=$(jj log --quiet --no-graph -r "main..@" -T '
+if(local_bookmarks.len() > 0,
+    "\n" ++ "BOOKMARK " ++ local_bookmarks.join(" ") ++ "\n"
+) ++
+change_id.short() ++ ": " ++ description.first_line() ++ "\n"
+')
+tmpfile=$(mktemp /tmp/jj_rebase.XXXXXX)
+
+# Pre-fill with the log
+printf "// Reorder any change or bookmark line to rearrange them during the rebase.\n" >> $tmpfile
+printf "// Add the prefix 's ' to any change line to squash into the following change." >> $tmpfile
+printf "\n%s\n" "$log_content" >> "$tmpfile"
+
+"$EDITOR" "$tmpfile"
+ret=$?
+
+if [ $ret -ne 0 ]; then
+    echo "Editor exited with code $ret. Canceling rebase."
+    rm -f "$tmpfile"
+    exit 1
+fi
+
+set -e
+
+most_recent_op_id=$(jj op log --limit 1 --no-graph --template "id.short()")
+
+################################
+# Phase 1: rebase bottom → top #
+################################
+
+# Extract commit hashes, stripping optional "s "
+commits=$(
+  grep ':' "$tmpfile" |
+  sed 's/^s[[:space:]]\+//' |
+  cut -d: -f1
+)
+
+prev="main"
+
+printf "%s\n" "$commits" |
+awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' |
+while read -r commit; do
+    commit=${commit#s }
+    jj rebase -r $commit --insert-after $prev
+    prev="$commit"
+done
+
+
+################################
+# Phase 2: move bookmarks      #
+# bottom → top                 #
+################################
+
+last_commit=""
+
+awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$tmpfile" |
+while read -r line; do
+    case "$line" in
+        *:*)
+            # strip optional "s "
+            line=${line#s }
+            last_commit=${line%%:*}
+            ;;
+        BOOKMARK\ *)
+            [ -n "$last_commit" ] || continue
+            bookmark_list=${line#BOOKMARK }
+            for bookmark in $bookmark_list; do
+              bookmark="${bookmark%\*}"
+              jj bookmark move --allow-backwards "$bookmark" --to "$last_commit"
+            done
+            ;;
+    esac
+done
+
+
+################################
+# Phase 3: squash bottom → top #
+################################
+
+grep '^[[:space:]]*s[[:space:]]\+[^:]\+:' "$tmpfile" |
+sed 's/^[[:space:]]*s[[:space:]]\+//' |
+cut -d: -f1 |
+awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' |
+while read -r commit; do
+    commit=${commit#s }
+    jj squash -r $commit --use-destination-message
+done
+
+printf "\nInteractive rebase complete. If you would like to revert this rebase, run \"jj op restore $most_recent_op_id\".\n"
