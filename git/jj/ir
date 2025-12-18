@@ -9,25 +9,58 @@ if(local_bookmarks.len() > 0,
 ) ++
 change_id.short() ++ ": " ++ description.first_line() ++ "\n"
 ')
+ret=$?
+if [ $ret -ne 0 ]; then
+    echo "Cancelled interactive rebase because we are not in a jj repo."
+    exit 1
+fi
 tmpfile=$(mktemp /tmp/jj_rebase.XXXXXX)
 
 # Pre-fill with the log
 printf "// Reorder any change or bookmark line to rearrange them during the rebase.\n" >> $tmpfile
-printf "// Add the prefix 's ' to any change line to squash into the following change." >> $tmpfile
-printf "\n%s\n" "$log_content" >> "$tmpfile"
+printf "// Modify any change description to update it.\n" >> $tmpfile
+printf "// Add the prefix 's ' to any change line to squash into the following change.\n" >> $tmpfile
+printf "%s\n" "$log_content" >> "$tmpfile"
 
 "$EDITOR" "$tmpfile"
 ret=$?
 
 if [ $ret -ne 0 ]; then
-    echo "Editor exited with code $ret. Canceling rebase."
+    echo "Editor exited with code $ret. Cancelled rebase."
     rm -f "$tmpfile"
     exit 1
 fi
 
+validate_file() {
+    local file=$1
+    local lineno=0
+
+    while IFS= read -r line || [ -n "$line" ]; do
+        lineno=$((lineno + 1))
+
+        [[ -z "$line" ]] && continue
+        [[ "$line" =~ ^// ]] && continue
+
+        [[ "$line" =~ ^BOOKMARK\ [A-Za-z0-9*]+([[:space:]]+[A-Za-z0-9*]+)*$ ]] && continue
+        [[ "$line" =~ ^s\ [a-z]{12}:\ .+ ]] && continue
+        [[ "$line" =~ ^[a-z]{12}:\ .+ ]] && continue
+
+        echo "Invalid line \"$line\"" >&2
+        echo "Aborted rebase." >&2
+        return 1
+    done < "$file"
+}
+
+validate_file "$tmpfile" || exit 1
+
 set -e
 
 most_recent_op_id=$(jj op log --limit 1 --no-graph --template "id.short()")
+most_recent_head=$(jj log -r @ --no-graph --template "change_id.short()")
+
+printf "Interactive rebase starting. If you would like to revert this rebase, run \"jj op restore $most_recent_op_id\".\n"
+
+trap 'echo "Encountered error - reverting rebase." && jj op restore "$most_recent_op_id"' ERR
 
 ################################
 # Phase 1: rebase bottom → top #
@@ -42,14 +75,14 @@ commits=$(
 
 prev="main"
 
-printf "%s\n" "$commits" |
-awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' |
 while read -r commit; do
     commit=${commit#s }
-    jj rebase -r $commit --insert-after $prev
+    jj rebase -r "$commit" --insert-after "$prev" --quiet
     prev="$commit"
-done
-
+done < <(
+    printf "%s\n" "$commits" |
+    awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }'
+)
 
 ################################
 # Phase 2: move bookmarks      #
@@ -58,7 +91,6 @@ done
 
 last_commit=""
 
-awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$tmpfile" |
 while read -r line; do
     case "$line" in
         *:*)
@@ -71,24 +103,53 @@ while read -r line; do
             bookmark_list=${line#BOOKMARK }
             for bookmark in $bookmark_list; do
               bookmark="${bookmark%\*}"
-              jj bookmark move --allow-backwards "$bookmark" --to "$last_commit"
+              jj bookmark move --allow-backwards "$bookmark" --to "$last_commit" --quiet
             done
             ;;
     esac
-done
+done < <(
+  awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$tmpfile"
+)
 
 
 ################################
 # Phase 3: squash bottom → top #
 ################################
 
-grep '^[[:space:]]*s[[:space:]]\+[^:]\+:' "$tmpfile" |
-sed 's/^[[:space:]]*s[[:space:]]\+//' |
-cut -d: -f1 |
-awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' |
 while read -r commit; do
     commit=${commit#s }
-    jj squash -r $commit --use-destination-message
-done
+    jj squash -r $commit --use-destination-message --quiet
+done < <(
+  grep '^[[:space:]]*s[[:space:]]\+[^:]\+:' "$tmpfile" |
+  sed 's/^[[:space:]]*s[[:space:]]\+//' |
+  cut -d: -f1 |
+  awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }'
+)
 
-printf "\nInteractive rebase complete. If you would like to revert this rebase, run \"jj op restore $most_recent_op_id\".\n"
+
+#################################
+# Phase 4: update change messages
+#################################
+
+# Reverse lines (bottom → top)
+while read -r line; do
+    case "$line" in
+        s\ *) continue ;;
+    esac
+
+    case "$line" in
+        *:*)
+            commit=${line%%:*}
+            message=${line#*: }
+            # Run jj describe
+            jj describe --message "$message" "$commit" --quiet
+            ;;
+    esac
+done < <(
+  awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$tmpfile"
+)
+
+new_head=$(grep -v '^s ' "$tmpfile" | grep ':' | head -n1 | cut -d: -f1)
+jj edit $new_head --quiet
+
+printf "Interactive rebase completed.\n"

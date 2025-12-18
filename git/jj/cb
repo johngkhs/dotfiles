@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -eu
+
+# Check for exactly one argument
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <bookmark_name>" >&2
+    exit 1
+fi
+
+bookmark_name="$1"
+jj bookmark create "$1" && jj bookmark track "$1@origin"
