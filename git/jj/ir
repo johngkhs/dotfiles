@@ -20,7 +20,7 @@ tmpfile=$(mktemp /tmp/jj_rebase.XXXXXX)
 printf "// Reorder any change or bookmark line to rearrange them during the rebase.\n" >> $tmpfile
 printf "// Modify any change description to update it.\n" >> $tmpfile
 printf "// Add the prefix 's ' to any change line to squash into the following change.\n" >> $tmpfile
-printf "%s\n" "$log_content" >> "$tmpfile"
+printf "%s\n\n" "$log_content" >> "$tmpfile"
 
 "$EDITOR" "$tmpfile"
 ret=$?
@@ -41,7 +41,7 @@ validate_file() {
         [[ -z "$line" ]] && continue
         [[ "$line" =~ ^// ]] && continue
 
-        [[ "$line" =~ ^BOOKMARK\ [A-Za-z0-9*]+([[:space:]]+[A-Za-z0-9*]+)*$ ]] && continue
+        [[ "$line" =~ ^BOOKMARK\ [-_/A-Za-z0-9*]+([[:space:]]+[-_/A-Za-z0-9*]+)*$ ]] && continue
         [[ "$line" =~ ^s\ [a-z]{12}:\ .+ ]] && continue
         [[ "$line" =~ ^[a-z]{12}:\ .+ ]] && continue
 
