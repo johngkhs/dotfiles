@@ -5,21 +5,23 @@ set -u
 
 log_content=$(jj log --quiet --no-graph -r "main..@" -T '
 if(local_bookmarks.len() > 0,
-    "\n" ++ "BOOKMARK " ++ local_bookmarks.join(" ") ++ "\n"
+    "BOOKMARK " ++ local_bookmarks.join(" ") ++ "\n"
 ) ++
-change_id.short() ++ ": " ++ description.first_line() ++ "\n"
+change_id.short() ++ ": " ++ description.first_line() ++ "\n\n"
 ')
 ret=$?
 if [ $ret -ne 0 ]; then
     echo "Cancelled interactive rebase because we are not in a jj repo."
     exit 1
 fi
-tmpfile=$(mktemp /tmp/jj_rebase.XXXXXX)
 
-# Pre-fill with the log
+original_tmpfile=$(mktemp /tmp/jj_rebase_original.XXXXXX)
+echo "$log_content" >> "$original_tmpfile"
+
+tmpfile=$(mktemp /tmp/jj_rebase.XXXXXX)
 printf "// Reorder any change or bookmark line to rearrange them during the rebase.\n" >> $tmpfile
 printf "// Modify any change description to update it.\n" >> $tmpfile
-printf "// Add the prefix 's ' to any change line to squash into the following change.\n" >> $tmpfile
+printf "// Add the prefix 's ' to any change line to squash into the following change.\n\n" >> $tmpfile
 printf "%s\n\n" "$log_content" >> "$tmpfile"
 
 "$EDITOR" "$tmpfile"
@@ -66,7 +68,23 @@ trap 'echo "Encountered error - reverting rebase." && jj op restore "$most_recen
 # Phase 1: rebase bottom → top #
 ################################
 
-# Extract commit hashes, stripping optional "s "
+original_commits=$(
+  grep ':' "$original_tmpfile" |
+  sed 's/^s[[:space:]]\+//' |
+  cut -d: -f1
+)
+
+declare -A original_commit_to_prev_commit
+prev="main"
+while read -r commit; do
+    commit=${commit#s }
+    original_commit_to_prev_commit["$commit"]="$prev"
+    prev="$commit"
+done < <(
+    printf "%s\n" "$original_commits" |
+    awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }'
+)
+
 commits=$(
   grep ':' "$tmpfile" |
   sed 's/^s[[:space:]]\+//' |
@@ -74,10 +92,12 @@ commits=$(
 )
 
 prev="main"
-
 while read -r commit; do
     commit=${commit#s }
-    jj rebase -r "$commit" --insert-after "$prev" --quiet
+    original_prev_commit="${original_commit_to_prev_commit[$commit]}"
+    if [ "$original_prev_commit" != "$prev" ]; then
+      jj rebase -r "$commit" --insert-after "$prev" --quiet --ignore-working-copy
+    fi
     prev="$commit"
 done < <(
     printf "%s\n" "$commits" |
@@ -89,8 +109,9 @@ done < <(
 # bottom → top                 #
 ################################
 
-last_commit=""
+declare -A bookmark_to_original_commit
 
+last_commit=""
 while read -r line; do
     case "$line" in
         *:*)
@@ -103,7 +124,31 @@ while read -r line; do
             bookmark_list=${line#BOOKMARK }
             for bookmark in $bookmark_list; do
               bookmark="${bookmark%\*}"
-              jj bookmark move --allow-backwards "$bookmark" --to "$last_commit" --quiet
+              bookmark_to_original_commit["$bookmark"]="$last_commit"
+            done
+            ;;
+    esac
+done < <(
+  awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$original_tmpfile"
+)
+
+last_commit=""
+while read -r line; do
+    case "$line" in
+        *:*)
+            # strip optional "s "
+            line=${line#s }
+            last_commit=${line%%:*}
+            ;;
+        BOOKMARK\ *)
+            [ -n "$last_commit" ] || continue
+            bookmark_list=${line#BOOKMARK }
+            for bookmark in $bookmark_list; do
+              bookmark="${bookmark%\*}"
+              original_commit="${bookmark_to_original_commit[$bookmark]}"
+              if [ "$original_commit" != "$last_commit" ]; then
+                jj bookmark move --allow-backwards "$bookmark" --to "$last_commit" --quiet --ignore-working-copy
+              fi
             done
             ;;
     esac
@@ -118,7 +163,7 @@ done < <(
 
 while read -r commit; do
     commit=${commit#s }
-    jj squash -r $commit --use-destination-message --quiet
+    jj squash -r $commit --use-destination-message --quiet --ignore-working-copy
 done < <(
   grep '^[[:space:]]*s[[:space:]]\+[^:]\+:' "$tmpfile" |
   sed 's/^[[:space:]]*s[[:space:]]\+//' |
@@ -131,7 +176,6 @@ done < <(
 # Phase 4: update change messages
 #################################
 
-# Reverse lines (bottom → top)
 while read -r line; do
     case "$line" in
         s\ *) continue ;;
@@ -141,8 +185,7 @@ while read -r line; do
         *:*)
             commit=${line%%:*}
             message=${line#*: }
-            # Run jj describe
-            jj describe --message "$message" "$commit" --quiet
+            rg --quiet "^$commit.*$message$" "$original_tmpfile" || jj describe --message "$message" "$commit" --quiet --ignore-working-copy
             ;;
     esac
 done < <(
