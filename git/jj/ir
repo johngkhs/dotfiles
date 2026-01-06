@@ -5,9 +5,9 @@ set -u
 
 log_content=$(jj log --quiet --no-graph -r "main..@" -T '
 if(local_bookmarks.len() > 0,
-    "BOOKMARK " ++ local_bookmarks.join(" ") ++ "\n"
+    "\nBOOKMARK " ++ local_bookmarks.join(" ") ++ "\n"
 ) ++
-change_id.short() ++ ": " ++ description.first_line() ++ "\n\n"
+change_id.short() ++ ": " ++ description.first_line() ++ "\n"
 ')
 ret=$?
 if [ $ret -ne 0 ]; then
@@ -22,7 +22,7 @@ tmpfile=$(mktemp /tmp/jj_rebase.XXXXXX)
 printf "// Reorder any change or bookmark line to rearrange them during the rebase.\n" >> $tmpfile
 printf "// Modify any change description to update it.\n" >> $tmpfile
 printf "// Add the prefix 's ' to any change line to squash into the following change.\n\n" >> $tmpfile
-printf "%s\n\n" "$log_content" >> "$tmpfile"
+printf "%s\n\n" "${log_content#$'\n'}" >> "$tmpfile"
 
 "$EDITOR" "$tmpfile"
 ret=$?
@@ -185,7 +185,7 @@ while read -r line; do
         *:*)
             commit=${line%%:*}
             message=${line#*: }
-            rg --quiet "^$commit.*$message$" "$original_tmpfile" || jj describe --message "$message" "$commit" --quiet --ignore-working-copy
+            rg --quiet "^${commit}.*${message}$" "$original_tmpfile" || jj describe --message "$message" "$commit" --quiet --ignore-working-copy
             ;;
     esac
 done < <(
@@ -193,6 +193,7 @@ done < <(
 )
 
 new_head=$(grep -v '^s ' "$tmpfile" | grep ':' | head -n1 | cut -d: -f1)
+jj workspace update-stale --quiet
 jj edit $new_head --quiet
 
 printf "Interactive rebase completed.\n"
