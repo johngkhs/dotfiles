@@ -44,8 +44,8 @@ validate_file() {
         [[ "$line" =~ ^// ]] && continue
 
         [[ "$line" =~ ^BOOKMARK\ [-_/A-Za-z0-9*]+([[:space:]]+[-_/A-Za-z0-9*]+)*$ ]] && continue
-        [[ "$line" =~ ^s\ [a-z]{12}:\ .+ ]] && continue
-        [[ "$line" =~ ^[a-z]{12}:\ .+ ]] && continue
+        [[ "$line" =~ ^s\ [a-z]{12}:\  ]] && continue
+        [[ "$line" =~ ^[a-z]{12}:\  ]] && continue
 
         echo "Invalid line \"$line\"" >&2
         echo "Aborted rebase." >&2
@@ -185,6 +185,7 @@ while read -r line; do
         *:*)
             commit=${line%%:*}
             message=${line#*: }
+            [[ -z "$message" ]] && continue
             rg --quiet "^${commit}.*${message}$" "$original_tmpfile" || jj describe --message "$message" "$commit" --quiet --ignore-working-copy
             ;;
     esac
