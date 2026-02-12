@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+set -eu
+
+STATE_DIR="$HOME/.jj-rebase-state"
+
+# Parse verbose flag
+VERBOSE=0
+VERBOSE_FLAG=""
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --verbose|-v)
+            VERBOSE=1
+            VERBOSE_FLAG="--verbose"
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+if [ ! -d "$STATE_DIR" ]; then
+    echo "Error: No rebase in progress."
+    echo "Nothing to continue."
+    exit 1
+fi
+
+if [ ! -f "$STATE_DIR/tmpfile" ]; then
+    echo "Error: Rebase state is corrupted."
+    echo "State directory exists but required files are missing."
+    exit 1
+fi
+
+# Mark that we're resuming
+touch "$STATE_DIR/resuming"
+
+# Get current commit to continue from
+if [ $VERBOSE -eq 1 ]; then
+    echo "Running: jj log -r @ --no-graph --template \"change_id.short()\"" >&2
+fi
+current_commit=$(jj log -r @ --no-graph --template "change_id.short()")
+
+# Read the saved state
+tmpfile="$STATE_DIR/tmpfile"
+original_tmpfile="$STATE_DIR/original_tmpfile"
+current_line=$(cat "$STATE_DIR/current_line")
+target_branch=$(cat "$STATE_DIR/target_branch")
+break_commit=$(cat "$STATE_DIR/break_commit")
+
+# Get all commits from break_commit to current @ (including new ones you created)
+if [ $VERBOSE -eq 1 ]; then
+    echo "Running: jj log --quiet --no-graph -r \"${break_commit}..@\" -T '<template>'" >&2
+fi
+
+# Get new commits (everything from break_commit to @, excluding break_commit itself)
+new_commits_log=$(jj log --quiet --no-graph -r "${break_commit}..@" -T 'change_id.short() ++ ": " ++ description.first_line() ++ "\n"')
+
+# Now rebuild the tmpfile:
+# 1. Keep everything before the break line
+# 2. Remove the 'b ' from the break line  
+# 3. Insert any new commits right after the break commit
+# 4. Keep everything after the break line
+
+temp_output=$(mktemp)
+lineno=0
+processed_break=false
+
+while IFS= read -r line || [ -n "$line" ]; do
+    lineno=$((lineno + 1))
+    
+    # Skip empty lines and comments when counting
+    [[ -z "$line" ]] && echo "$line" >> "$temp_output" && continue
+    [[ "$line" =~ ^// ]] && echo "$line" >> "$temp_output" && continue
+    
+    if [ $lineno -eq $current_line ] && [ "$processed_break" = false ]; then
+        # This is the break line - remove 'b ' prefix
+        echo "${line#b }" >> "$temp_output"
+        
+        # Insert any new commits created during the break
+        if [ -n "$new_commits_log" ]; then
+            # Remove the trailing newline if present
+            echo -n "$new_commits_log" | sed '/^$/d' >> "$temp_output"
+        fi
+        
+        processed_break=true
+    else
+        echo "$line" >> "$temp_output"
+    fi
+done < "$tmpfile"
+
+mv "$temp_output" "$tmpfile"
+
+echo "Continuing interactive rebase from commit: $current_commit"
+if [ -n "$new_commits_log" ]; then
+    echo "Added new commits to rebase plan:"
+    echo "$new_commits_log"
+fi
+
+
+# Re-invoke the main script which will detect the resume state
+exec "$(dirname "$0")/ir" $VERBOSE_FLAG

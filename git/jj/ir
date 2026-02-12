@@ -3,162 +3,276 @@ set -u
 
 : "${EDITOR:=nvim}"
 
-target_branch="${1:-main}"
+STATE_DIR="$HOME/.jj-rebase-state"
 
-log_content=$(jj log --quiet --no-graph -r "$target_branch..@" -T '
+VERBOSE=0
+
+target_branch=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --verbose|-v)
+            VERBOSE=1
+            shift
+            ;;
+        *)
+            target_branch="$1"
+            shift
+            ;;
+    esac
+done
+
+target_branch="${target_branch:-main}"
+
+jj_cmd() {
+    if [ $VERBOSE -eq 1 ]; then
+        echo "jj $*" >&2
+    fi
+    jj "$@"
+}
+
+# Check if we're resuming a previous rebase
+RESUMING=false
+if [ -f "$STATE_DIR/resuming" ]; then
+    RESUMING=true
+    echo "Resuming interactive rebase..."
+    rm "$STATE_DIR/resuming"
+    
+    tmpfile="$STATE_DIR/tmpfile"
+    original_tmpfile="$STATE_DIR/original_tmpfile"
+    most_recent_op_id=$(cat "$STATE_DIR/most_recent_op_id")
+    target_branch=$(cat "$STATE_DIR/target_branch")
+    current_line=$(cat "$STATE_DIR/current_line")
+    
+    # Skip to Phase 3.5 (break handling) - phases 1-3 already completed
+    trap 'echo "Encountered error - reverting rebase." && jj_cmd op restore "$most_recent_op_id"' ERR
+    set -e
+    
+    # Jump directly to break handling continuation
+else
+    # Starting a new rebase - clean up any old state
+    if [ -d "$STATE_DIR" ]; then
+        echo "Cleaning up previous rebase state..."
+        rm -rf "$STATE_DIR"
+    fi
+    log_content=$(jj log --quiet --no-graph -r "$target_branch..@" -T '
 if(local_bookmarks.len() > 0,
     "\nBOOKMARK " ++ local_bookmarks.join(" ") ++ "\n"
 ) ++
 change_id.short() ++ ": " ++ description.first_line() ++ "\n"
 ')
-ret=$?
-if [ $ret -ne 0 ]; then
-    echo "Cancelled interactive rebase because we are not in a jj repo."
-    exit 1
+    ret=$?
+    if [ $ret -ne 0 ]; then
+        echo "Cancelled interactive rebase because we are not in a jj repo."
+        exit 1
+    fi
+
+    original_tmpfile=$(mktemp /tmp/jj_rebase_original.XXXXXX)
+    echo "$log_content" >> "$original_tmpfile"
+
+    tmpfile=$(mktemp /tmp/jj_rebase.XXXXXX)
+    printf "// Reorder any change or bookmark line to rearrange them during the rebase.\n" >> $tmpfile
+    printf "// Modify any change description to update it.\n" >> $tmpfile
+    printf "// Add the prefix 's ' to any change line to squash into the following change.\n" >> $tmpfile
+    printf "// Add the prefix 'b ' to any change line to break and allow manual editing.\n\n" >> $tmpfile
+    printf "%s\n\n" "${log_content#$'\n'}" >> "$tmpfile"
+
+    "$EDITOR" "$tmpfile"
+    ret=$?
+
+    if [ $ret -ne 0 ]; then
+        echo "Editor exited with code $ret. Cancelled rebase."
+        rm -f "$tmpfile"
+        exit 1
+    fi
+
+    validate_file() {
+        local file=$1
+        local lineno=0
+
+        while IFS= read -r line || [ -n "$line" ]; do
+            lineno=$((lineno + 1))
+
+            [[ -z "$line" ]] && continue
+            [[ "$line" =~ ^// ]] && continue
+
+            [[ "$line" =~ ^BOOKMARK\ [-_/A-Za-z.0-9*]+([[:space:]]+[-_/A-Za-z.0-9*]+)*$ ]] && continue
+            [[ "$line" =~ ^[sb]\ [a-z]{12}:\  ]] && continue
+            [[ "$line" =~ ^[a-z]{12}:\  ]] && continue
+
+            echo "Invalid line \"$line\"" >&2
+            echo "Aborted rebase." >&2
+            return 1
+        done < "$file"
+    }
+
+    validate_file "$tmpfile" || exit 1
+
+    set -e
+
+    most_recent_op_id=$(jj op log --limit 1 --no-graph --template "id.short()")
+    most_recent_head=$(jj log -r @ --no-graph --template "change_id.short()")
+
+    printf "Interactive rebase starting. If you would like to revert this rebase, run \"jj op restore $most_recent_op_id\".\n"
 fi
-
-original_tmpfile=$(mktemp /tmp/jj_rebase_original.XXXXXX)
-echo "$log_content" >> "$original_tmpfile"
-
-tmpfile=$(mktemp /tmp/jj_rebase.XXXXXX)
-printf "// Reorder any change or bookmark line to rearrange them during the rebase.\n" >> $tmpfile
-printf "// Modify any change description to update it.\n" >> $tmpfile
-printf "// Add the prefix 's ' to any change line to squash into the following change.\n\n" >> $tmpfile
-printf "%s\n\n" "${log_content#$'\n'}" >> "$tmpfile"
-
-"$EDITOR" "$tmpfile"
-ret=$?
-
-if [ $ret -ne 0 ]; then
-    echo "Editor exited with code $ret. Cancelled rebase."
-    rm -f "$tmpfile"
-    exit 1
-fi
-
-validate_file() {
-    local file=$1
-    local lineno=0
-
-    while IFS= read -r line || [ -n "$line" ]; do
-        lineno=$((lineno + 1))
-
-        [[ -z "$line" ]] && continue
-        [[ "$line" =~ ^// ]] && continue
-
-        [[ "$line" =~ ^BOOKMARK\ [-_/A-Za-z.0-9*]+([[:space:]]+[-_/A-Za-z.0-9*]+)*$ ]] && continue
-        [[ "$line" =~ ^s\ [a-z]{12}:\  ]] && continue
-        [[ "$line" =~ ^[a-z]{12}:\  ]] && continue
-
-        echo "Invalid line \"$line\"" >&2
-        echo "Aborted rebase." >&2
-        return 1
-    done < "$file"
-}
-
-validate_file "$tmpfile" || exit 1
-
-set -e
-
-most_recent_op_id=$(jj op log --limit 1 --no-graph --template "id.short()")
-most_recent_head=$(jj log -r @ --no-graph --template "change_id.short()")
-
-printf "Interactive rebase starting.\n"
 
 trap 'echo "Encountered error - reverting rebase." && jj op restore "$most_recent_op_id"' ERR
 
-################################
-# Phase 1: rebase bottom → top #
-################################
+if [ "$RESUMING" = false ]; then
 
-original_commits=$(
-  grep ':' "$original_tmpfile" |
-  sed 's/^s[[:space:]]\+//' |
-  cut -d: -f1
-)
+  ################################
+  # Phase 1: rebase bottom → top #
+  ################################
 
-commits=$(
-  grep ':' "$tmpfile" |
-  sed 's/^s[[:space:]]\+//' |
-  cut -d: -f1
-)
+  original_commits=$(
+    grep ':' "$original_tmpfile" |
+    sed 's/^[sb][[:space:]]\+//' |
+    cut -d: -f1
+  )
 
-prev="$target_branch"
-while read -r commit; do
-    commit=${commit#s }
-    jj rebase -r "$commit" --insert-after "$prev" --quiet --ignore-working-copy
-    prev="$commit"
-done < <(
-    printf "%s\n" "$commits" |
+  commits=$(
+    grep ':' "$tmpfile" |
+    sed 's/^[sb][[:space:]]\+//' |
+    cut -d: -f1
+  )
+
+  prev="$target_branch"
+  while read -r commit; do
+      commit=${commit#s }
+      commit=${commit#b }
+      jj_cmd rebase -r "$commit" --insert-after "$prev" --quiet --ignore-working-copy
+      prev="$commit"
+  done < <(
+      printf "%s\n" "$commits" |
+      awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }'
+  )
+
+  ################################
+  # Phase 2: move bookmarks      #
+  # bottom → top                 #
+  ################################
+
+  declare -A bookmark_to_original_commit
+
+  last_commit=""
+  while read -r line; do
+      case "$line" in
+          *:*)
+              # strip optional "s " or "b "
+              line=${line#s }
+              line=${line#b }
+              last_commit=${line%%:*}
+              ;;
+          BOOKMARK\ *)
+              [ -n "$last_commit" ] || continue
+              bookmark_list=${line#BOOKMARK }
+              for bookmark in $bookmark_list; do
+                bookmark="${bookmark%\*}"
+                bookmark_to_original_commit["$bookmark"]="$last_commit"
+              done
+              ;;
+      esac
+  done < <(
+    awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$original_tmpfile"
+  )
+
+  last_commit=""
+  while read -r line; do
+      case "$line" in
+          *:*)
+              # strip optional "s " or "b "
+              line=${line#s }
+              line=${line#b }
+              last_commit=${line%%:*}
+              ;;
+          BOOKMARK\ *)
+              [ -n "$last_commit" ] || continue
+              bookmark_list=${line#BOOKMARK }
+              for bookmark in $bookmark_list; do
+                bookmark="${bookmark%\*}"
+                original_commit="${bookmark_to_original_commit[$bookmark]}"
+                if [ "$original_commit" != "$last_commit" ]; then
+                  jj_cmd bookmark move --allow-backwards "$bookmark" --to "$last_commit" --quiet --ignore-working-copy
+                fi
+              done
+              ;;
+      esac
+  done < <(
+    awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$tmpfile"
+  )
+
+
+  ################################
+  # Phase 3: squash bottom → top #
+  ################################
+
+  while read -r commit; do
+      commit=${commit#s }
+      jj_cmd squash -r $commit --use-destination-message --quiet --ignore-working-copy
+  done < <(
+    grep '^[[:space:]]*s[[:space:]]\+[^:]\+:' "$tmpfile" |
+    sed 's/^[[:space:]]*s[[:space:]]\+//' |
+    cut -d: -f1 |
     awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }'
-)
+  )
+
+fi
 
 ################################
-# Phase 2: move bookmarks      #
-# bottom → top                 #
+# Phase 3.5: Handle breaks     #
 ################################
 
-declare -A bookmark_to_original_commit
+lineno=0
+start_processing=false
 
-last_commit=""
-while read -r line; do
-    case "$line" in
-        *:*)
-            # strip optional "s "
-            line=${line#s }
-            last_commit=${line%%:*}
-            ;;
-        BOOKMARK\ *)
-            [ -n "$last_commit" ] || continue
-            bookmark_list=${line#BOOKMARK }
-            for bookmark in $bookmark_list; do
-              bookmark="${bookmark%\*}"
-              bookmark_to_original_commit["$bookmark"]="$last_commit"
-            done
-            ;;
-    esac
-done < <(
-  awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$original_tmpfile"
-)
+# If resuming, we need to start from after the current_line
+if [ "$RESUMING" = true ]; then
+    start_processing_line=$((current_line + 1))
+else
+    start_processing_line=1
+fi
 
-last_commit=""
-while read -r line; do
-    case "$line" in
-        *:*)
-            # strip optional "s "
-            line=${line#s }
-            last_commit=${line%%:*}
-            ;;
-        BOOKMARK\ *)
-            [ -n "$last_commit" ] || continue
-            bookmark_list=${line#BOOKMARK }
-            for bookmark in $bookmark_list; do
-              bookmark="${bookmark%\*}"
-              original_commit="${bookmark_to_original_commit[$bookmark]}"
-              if [ "$original_commit" != "$last_commit" ]; then
-                jj bookmark move --allow-backwards "$bookmark" --to "$last_commit" --quiet --ignore-working-copy
-              fi
-            done
-            ;;
-    esac
-done < <(
-  awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$tmpfile"
-)
-
-
-################################
-# Phase 3: squash bottom → top #
-################################
-
-while read -r commit; do
-    commit=${commit#s }
-    jj squash -r $commit --use-destination-message --quiet --ignore-working-copy
-done < <(
-  grep '^[[:space:]]*s[[:space:]]\+[^:]\+:' "$tmpfile" |
-  sed 's/^[[:space:]]*s[[:space:]]\+//' |
-  cut -d: -f1 |
-  awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }'
-)
-
+while IFS= read -r line || [ -n "$line" ]; do
+    lineno=$((lineno + 1))
+    
+    # Skip lines until we reach where we should start
+    if [ $lineno -lt $start_processing_line ]; then
+        continue
+    fi
+    
+    # Skip empty lines and comments
+    [[ -z "$line" ]] && continue
+    [[ "$line" =~ ^// ]] && continue
+    [[ "$line" =~ ^BOOKMARK ]] && continue
+    
+    # Check if this is a break line
+    if [[ "$line" =~ ^b\ [a-z]{12}:\  ]]; then
+        # Extract the commit ID - strip 'b ' prefix and everything after ':'
+        break_commit=$(echo "$line" | sed 's/^b //' | cut -d: -f1)
+        
+        # Save state for resumption
+        mkdir -p "$STATE_DIR"
+        echo "$most_recent_op_id" > "$STATE_DIR/most_recent_op_id"
+        echo "$target_branch" > "$STATE_DIR/target_branch"
+        echo "$lineno" > "$STATE_DIR/current_line"
+        echo "$break_commit" > "$STATE_DIR/break_commit"
+        cp "$tmpfile" "$STATE_DIR/tmpfile"
+        cp "$original_tmpfile" "$STATE_DIR/original_tmpfile"
+        
+        # Move to the break commit
+        jj_cmd edit "$break_commit" --quiet
+        
+        echo ""
+        echo "Rebase paused at commit: $break_commit"
+        echo "You can now make changes, create new commits, or amend the current commit."
+        echo ""
+        echo "When you're ready to continue, run: ir-continue"
+        echo "To abort the rebase, run: ir-abort"
+        echo ""
+        
+        exit 0
+    fi
+done < "$tmpfile"
 
 #################################
 # Phase 4: update change messages
@@ -167,6 +281,7 @@ done < <(
 while read -r line; do
     case "$line" in
         s\ *) continue ;;
+        b\ *) continue ;;
     esac
 
     case "$line" in
@@ -174,16 +289,18 @@ while read -r line; do
             commit=${line%%:*}
             message=${line#*: }
             [[ -z "$message" ]] && continue
-            rg --quiet "^${commit}.*${message}$" "$original_tmpfile" || jj describe --message "$message" "$commit" --quiet --ignore-working-copy
+            rg --quiet "^${commit}.*${message}$" "$original_tmpfile" || jj_cmd describe --message "$message" "$commit" --quiet --ignore-working-copy
             ;;
     esac
 done < <(
   awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }' "$tmpfile"
 )
 
-new_head=$(grep -v '^s ' "$tmpfile" | grep ':' | head -n1 | cut -d: -f1)
+new_head=$(grep -v '^[sb] ' "$tmpfile" | grep ':' | head -n1 | cut -d: -f1)
 jj workspace update-stale --quiet
 jj edit $new_head --quiet
-jj rebase --branch @ --onto "$target_branch" --quiet
+jj_cmd rebase --branch @ --onto "$target_branch" --quiet
+
+[ -d "$STATE_DIR" ] && rm -rf "$STATE_DIR"
 
 printf "Interactive rebase completed. If you would like to revert this rebase, run \"jj op restore $most_recent_op_id\".\n"
