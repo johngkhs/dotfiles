@@ -3,7 +3,9 @@ set -u
 
 : "${EDITOR:=nvim}"
 
-log_content=$(jj log --quiet --no-graph -r "main..@" -T '
+target_branch="${1:-main}"
+
+log_content=$(jj log --quiet --no-graph -r "$target_branch..@" -T '
 if(local_bookmarks.len() > 0,
     "\nBOOKMARK " ++ local_bookmarks.join(" ") ++ "\n"
 ) ++
@@ -43,7 +45,7 @@ validate_file() {
         [[ -z "$line" ]] && continue
         [[ "$line" =~ ^// ]] && continue
 
-        [[ "$line" =~ ^BOOKMARK\ [-_/A-Za-z0-9*]+([[:space:]]+[-_/A-Za-z0-9*]+)*$ ]] && continue
+        [[ "$line" =~ ^BOOKMARK\ [-_/A-Za-z.0-9*]+([[:space:]]+[-_/A-Za-z.0-9*]+)*$ ]] && continue
         [[ "$line" =~ ^s\ [a-z]{12}:\  ]] && continue
         [[ "$line" =~ ^[a-z]{12}:\  ]] && continue
 
@@ -60,7 +62,7 @@ set -e
 most_recent_op_id=$(jj op log --limit 1 --no-graph --template "id.short()")
 most_recent_head=$(jj log -r @ --no-graph --template "change_id.short()")
 
-printf "Interactive rebase starting. If you would like to revert this rebase, run \"jj op restore $most_recent_op_id\".\n"
+printf "Interactive rebase starting.\n"
 
 trap 'echo "Encountered error - reverting rebase." && jj op restore "$most_recent_op_id"' ERR
 
@@ -74,30 +76,16 @@ original_commits=$(
   cut -d: -f1
 )
 
-declare -A original_commit_to_prev_commit
-prev="main"
-while read -r commit; do
-    commit=${commit#s }
-    original_commit_to_prev_commit["$commit"]="$prev"
-    prev="$commit"
-done < <(
-    printf "%s\n" "$original_commits" |
-    awk '{ a[NR]=$0 } END { for (i=NR;i>=1;i--) print a[i] }'
-)
-
 commits=$(
   grep ':' "$tmpfile" |
   sed 's/^s[[:space:]]\+//' |
   cut -d: -f1
 )
 
-prev="main"
+prev="$target_branch"
 while read -r commit; do
     commit=${commit#s }
-    original_prev_commit="${original_commit_to_prev_commit[$commit]}"
-    if [ "$original_prev_commit" != "$prev" ]; then
-      jj rebase -r "$commit" --insert-after "$prev" --quiet --ignore-working-copy
-    fi
+    jj rebase -r "$commit" --insert-after "$prev" --quiet --ignore-working-copy
     prev="$commit"
 done < <(
     printf "%s\n" "$commits" |
@@ -196,5 +184,6 @@ done < <(
 new_head=$(grep -v '^s ' "$tmpfile" | grep ':' | head -n1 | cut -d: -f1)
 jj workspace update-stale --quiet
 jj edit $new_head --quiet
+jj rebase --branch @ --onto "$target_branch" --quiet
 
-printf "Interactive rebase completed.\n"
+printf "Interactive rebase completed. If you would like to revert this rebase, run \"jj op restore $most_recent_op_id\".\n"
