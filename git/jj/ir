@@ -271,7 +271,11 @@ class InteractiveRebase:
             change_id: ChangeId = item.change_id
             
             # 1. Rebase onto previous commit
-            self.jj_cmd('rebase', '-s', change_id, '--onto', prev_commit, '--quiet')
+            already_rebased_result = self.jj_cmd('log', '-r', f'{change_id}- & {prev_commit}', '--no-graph', '-T', 'change_id.short()')
+            already_rebased = bool(already_rebased_result.stdout.strip())
+
+            if not already_rebased:
+                self.jj_cmd('rebase', '-r', change_id, '--onto', prev_commit, '--quiet')
             
             # 2. Update message if changed
             original: Optional[Commit] = original_state.get(change_id)
