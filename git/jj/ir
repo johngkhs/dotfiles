@@ -45,16 +45,27 @@ class BreakItem:
 RebaseItem = Union[CommitItem, BreakItem]
 
 
+# ANSI color codes for terminal UI
+class Colors:
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    GRAY = '\033[90m'
+    GREEN = '\033[32m'
+    BRIGHT_GREEN = '\033[1;32m'
+    YELLOW = '\033[1;33m'
+    CLEAR_SCREEN = '\033[2J\033[H'
+
+
 class InteractiveRebase:
-    def __init__(self, target_branch: str = 'main', verbose: bool = False) -> None:
+    def __init__(self, target_branch: str = 'main', display_mode: str = 'none') -> None:
         self.target_branch: str = target_branch
-        self.verbose: bool = verbose
+        self.display_mode: str = display_mode
         self.original_op_id: Optional[OperationId] = None
         
     def jj_cmd(self, *args: str, permit_stderr = False) -> subprocess.CompletedProcess[str]:
         """Run jj command with optional verbose output"""
         cmd: List[str] = ['jj'] + list(args)
-        if self.verbose:
+        if self.display_mode == 'plain':
             print(f"> jj {' '.join(args)}", file=sys.stderr)
         
         result: subprocess.CompletedProcess[str] = subprocess.run(
@@ -200,7 +211,61 @@ class InteractiveRebase:
             else:
                 print(f"Failed to abort rebase: {result}", file=sys.stderr)
         sys.exit(1)
+
+    def show_progress(self, plan: List[RebaseItem], current_idx: int, total: int) -> None:
+        """Display the rebase plan with current progress highlighted"""
+        # Clear screen and move to top
+        print(Colors.CLEAR_SCREEN, end='')
         
+        print("╔══════════════════════════════════════════════════════════════╗")
+        print(f"║  Interactive Rebase Progress: {current_idx}/{total} items processed")
+        print("╚══════════════════════════════════════════════════════════════╝\n")
+
+        for i, item in enumerate(plan):
+            if isinstance(item, BreakItem):
+                if item.bookmarks:
+                    if i > 0:  # Add blank line before bookmarks (except first item)
+                        print()
+                    status = " ✓" if (i > total - current_idx - 1) else ""
+                    color = Colors.GRAY if (i > total - current_idx - 1) else Colors.RESET
+                    print(f"{color}BOOKMARK {' '.join(item.bookmarks)}{status}{Colors.RESET}")
+
+                if i > total - current_idx - 1:
+                    status = " ✓"
+                    print(f"{Colors.GRAY}b{status}{Colors.RESET}")
+                elif i == total - current_idx - 1:
+                    print(f"{Colors.YELLOW}b ⏸ PAUSED{Colors.RESET}")
+                else:
+                    print(f"{Colors.RESET}b{Colors.RESET}")
+            else:
+                squash_str = "s " if item.squash else ""
+                msg = item.message[:60] + "..." if len(item.message) > 60 else item.message
+
+                # Determine color based on processing status
+                if i > total - current_idx - 1:
+                    # Already processed - green
+                    color = Colors.GRAY
+                    status = " ✓"
+                elif i == total - current_idx - 1:
+                    # Currently processing - yellow
+                    color = Colors.YELLOW
+                    status = " ⟳"
+                else:
+                    # Not yet processed - gray
+                    color = Colors.RESET
+                    status = ""
+
+                # Print bookmarks line if present
+                if item.bookmarks:
+                    if i > 0:  # Add blank line before bookmarks (except first item)
+                        print()
+                    print(f"{color}BOOKMARK {' '.join(item.bookmarks)}{status}{Colors.RESET}")
+
+                # Print commit line
+                print(f"{color}{squash_str}{item.change_id}: {msg}{status}{Colors.RESET}")
+
+        print()  # Extra line for spacing
+
     def run(self) -> None:
         # Set up signal handler for Ctrl-C
         signal.signal(signal.SIGINT, self.abort_rebase)
@@ -250,7 +315,13 @@ class InteractiveRebase:
             for bookmark in item.bookmarks
         }
         
-        for item in reversed(edited_plan):
+        total_items = len(edited_plan)
+
+        for idx, item in enumerate(reversed(edited_plan)):
+            # Display progress UI (if enabled)
+            if self.display_mode == 'pretty':
+                self.show_progress(edited_plan, idx, total_items)
+
             if isinstance(item, BreakItem):
                 # Edit to the current position before breaking
                 self.jj_cmd('edit', prev_commit, '--quiet')
@@ -258,9 +329,9 @@ class InteractiveRebase:
                                      'change_id.short() ++ " " ++ committer.email() ++ " " ++ committer.timestamp() ++ " " ++ bookmarks ++ " " ++ " " ++ description')
                 current_info = result.stdout.strip()
                 
-                print(f"Rebase paused...")
+                print(f"{Colors.YELLOW}Rebase paused at break point{Colors.RESET}")
                 print(f"HEAD: {current_info}")
-                print("Press Enter to continue rebase after manual edits, or Ctrl-C to abort...")
+                print(f"\n{Colors.BOLD}Press Enter to continue rebase after manual edits, or Ctrl-C to abort...{Colors.RESET}")
                 input()  # Signal handler will catch Ctrl-C
                 
                 # After break, get the actual current commit (user may have created new commits)
@@ -269,7 +340,7 @@ class InteractiveRebase:
                 current_info = result.stdout.strip()
                 current = current_info.split(' ')[0]
                 
-                print(f"Rebase resuming from HEAD: {current_info}")
+                print(f"{Colors.GREEN}Resuming from HEAD: {current_info}{Colors.RESET}\n")
                 
                 # Continue from current position
                 prev_commit = current
@@ -316,21 +387,26 @@ class InteractiveRebase:
                 # This commit becomes the new base for the next one
                 prev_commit = change_id
         
+        # Final display (if enabled)
+        if self.display_mode == 'pretty':
+            self.show_progress(edited_plan, total_items, total_items)
+
         self.jj_cmd('edit', prev_commit, '--quiet')
-            
-        print(f"Interactive rebase completed. To revert, run: jj op restore {self.original_op_id}")
+
+        print(f"{Colors.BRIGHT_GREEN}✓ Interactive rebase completed!{Colors.RESET}")
+        print(f"To revert, run: jj op restore {self.original_op_id}")
 
 
 def main() -> None:
     parser: argparse.ArgumentParser = argparse.ArgumentParser(description='Interactive rebase for jj')
     parser.add_argument('target_branch', nargs='?', default='main', 
                        help='Target branch to rebase onto (default: main)')
-    parser.add_argument('--verbose', '-v', action='store_true', 
-                       help='Print each jj command as it runs')
+    parser.add_argument('--display_mode', '-d', choices=['none', 'plain', 'pretty'], default='pretty',
+                       help='Display mode: none (quiet), plain (show commands), pretty (progress UI)')
     
     args: argparse.Namespace = parser.parse_args()
     
-    rebase: InteractiveRebase = InteractiveRebase(args.target_branch, args.verbose)
+    rebase: InteractiveRebase = InteractiveRebase(args.target_branch, args.display_mode)
     rebase.run()
 
 
