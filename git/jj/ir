@@ -39,7 +39,7 @@ class CommitItem:
 @dataclass
 class BreakItem:
     """Represents a break point in the rebase plan"""
-    pass
+    bookmarks: List[Bookmark] = field(default_factory=list)
 
 
 RebaseItem = Union[CommitItem, BreakItem]
@@ -90,7 +90,7 @@ class InteractiveRebase:
             if line.startswith('BOOKMARK '):
                 # Save bookmarks for the next commit we see
                 bookmark_names: List[str] = line[9:].split()
-                pending_bookmarks = [Bookmark(b.rstrip('*')) for b in bookmark_names]
+                pending_bookmarks.extend(Bookmark(b.rstrip('*')) for b in bookmark_names)
             elif ':' in line:
                 match: Optional[re.Match[str]] = re.match(r'^([a-z]{12}):\s*(.*)$', line)
                 if match:
@@ -132,14 +132,14 @@ class InteractiveRebase:
                 continue
                 
             if line == 'b':
-                items.append(BreakItem())
-                pending_bookmarks = []  # Clear any pending bookmarks
+                items.append(BreakItem(bookmarks=pending_bookmarks))
+                pending_bookmarks = []  # Reset after assigning to break
                 continue
                 
             if line.startswith('BOOKMARK '):
                 # Save bookmarks for the next commit we see
                 bookmark_names: List[str] = line[9:].split()
-                pending_bookmarks = [Bookmark(b.rstrip('*')) for b in bookmark_names]
+                pending_bookmarks.extend(Bookmark(b.rstrip('*')) for b in bookmark_names)
                 continue
                 
             match: Optional[re.Match[str]] = re.match(r'^(s\s+)?([a-z]{12}):\s*(.*)$', line)
@@ -226,6 +226,15 @@ class InteractiveRebase:
         formatted: str = self.format_commits_for_edit(original_commits)
         edited_content: str = self.edit_plan(formatted)
         edited_plan: List[RebaseItem] = self.parse_edited_plan(edited_content)
+
+        # Validate no bookmark appears twice
+        seen_bookmarks: set[Bookmark] = set()
+        for item in edited_plan:
+            for bookmark in getattr(item, 'bookmarks', []):
+                if bookmark in seen_bookmarks:
+                    print(f"Error: Bookmark '{bookmark}' appears multiple times in rebase plan", file=sys.stderr)
+                    sys.exit(1)
+                seen_bookmarks.add(bookmark)
         
         # If all lines deleted, do nothing
         if not edited_plan:
@@ -264,6 +273,11 @@ class InteractiveRebase:
                 
                 # Continue from current position
                 prev_commit = current
+
+                for bookmark in item.bookmarks:
+                        self.jj_cmd('bookmark', 'set', '--allow-backwards',
+                                   bookmark, '--to', prev_commit, '--quiet')
+
                 continue
                 
             # Process commit (must be CommitItem now)
@@ -302,15 +316,7 @@ class InteractiveRebase:
                 # This commit becomes the new base for the next one
                 prev_commit = change_id
         
-        # Find the topmost non-squashed commit and edit to it
-        new_head: Optional[ChangeId] = None
-        for item in edited_plan:
-            if isinstance(item, CommitItem) and not item.squash:
-                new_head = item.change_id
-                break
-                
-        if new_head:
-            self.jj_cmd('edit', new_head, '--quiet')
+        self.jj_cmd('edit', prev_commit, '--quiet')
             
         print(f"Interactive rebase completed. To revert, run: jj op restore {self.original_op_id}")
 
